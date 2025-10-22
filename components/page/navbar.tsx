@@ -3,6 +3,8 @@
 import { BarChart3, FileText, Search } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { MarketStatusIndicator } from './market-status-indicator';
+import { ThemeSwitch } from './theme-switch';
 
 export default function Navbar() {
 	const pathname = usePathname();
@@ -17,8 +19,8 @@ export default function Navbar() {
 	];
 
 	return (
-		<header className="bg-card backdrop-blur supports-[backdrop-filter]:bg-card rounded-lg border-b-muted border-b-3">
-			<div className="container mx-auto px-4">
+		<header className="bg-card backdrop-blur supports-[backdrop-filter]:bg-card rounded-t-lg border border-b">
+			<div className="container max-w-full px-4">
 				<div className="flex h-16 items-center justify-between">
 					<div className="flex items-center gap-8">
 						<Link
@@ -40,8 +42,8 @@ export default function Navbar() {
 										href={item.path}
 										className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
 											isActive
-												? 'bg-primary text-primary-foreground'
-												: 'text-muted-foreground hover:text-foreground hover:bg-muted'
+												? 'bg-primary/80 text-primary-foreground'
+												: 'text-muted-foreground hover:text-primary-foreground hover:bg-primary/80'
 										}`}
 									>
 										<item.icon className="h-4 w-4" />
@@ -53,10 +55,8 @@ export default function Navbar() {
 					</div>
 
 					<div className="flex items-center gap-4">
-						<div className="hidden sm:flex items-center gap-2 text-sm text-muted-foreground">
-							<div className="h-2 w-2 rounded-full bg-success animate-pulse"></div>
-							IDX Market
-						</div>
+						<MarketStatusIndicator />
+						<ThemeSwitch />
 					</div>
 				</div>
 			</div>
