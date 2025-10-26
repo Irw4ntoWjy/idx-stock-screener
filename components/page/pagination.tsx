@@ -51,7 +51,7 @@ export function DataTablePagination({
 		<div className="mt-4 flex items-center justify-between">
 			<div className="text-sm text-muted-foreground">
 				Showing {startIndex + 1} to {endIndex} of {totalItems}{' '}
-				stocks
+				Stocks
 			</div>
 
 			<Pagination>
@@ -62,9 +62,9 @@ export function DataTablePagination({
 								onPageChange(Math.max(1, currentPage - 1))
 							}
 							className={cn(
-								currentPage === 1 &&
-									'pointer-events-none opacity-50',
-								'cursor-pointer'
+								currentPage === 1
+									? 'pointer-events-none text-muted-foreground opacity-50'
+									: 'cursor-pointer text-foreground'
 							)}
 						/>
 					</PaginationItem>
@@ -74,7 +74,7 @@ export function DataTablePagination({
 							<PaginationLink
 								onClick={() => onPageChange(pageNum)}
 								isActive={currentPage === pageNum}
-								className="cursor-pointer"
+								className="cursor-pointer text-foreground"
 							>
 								{pageNum}
 							</PaginationLink>
@@ -83,7 +83,7 @@ export function DataTablePagination({
 
 					{totalPages > 5 && currentPage < totalPages - 2 && (
 						<PaginationItem>
-							<PaginationEllipsis />
+							<PaginationEllipsis className="text-foreground" />
 						</PaginationItem>
 					)}
 
@@ -95,9 +95,9 @@ export function DataTablePagination({
 								)
 							}
 							className={cn(
-								currentPage === totalPages &&
-									'pointer-events-none opacity-50',
-								'cursor-pointer'
+								currentPage === totalPages
+									? 'pointer-events-none text-muted-foreground opacity-50'
+									: 'cursor-pointer text-foreground '
 							)}
 						/>
 					</PaginationItem>

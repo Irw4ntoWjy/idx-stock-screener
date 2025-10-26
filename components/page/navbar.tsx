@@ -33,7 +33,7 @@ export default function Navbar() {
 							</span>
 						</Link>
 
-						<nav className="hidden md:flex items-center gap-6">
+						<nav className="hidden md:flex items-center gap-2">
 							{navItems.map((item) => {
 								const isActive = pathname === item.path;
 								return (
@@ -42,7 +42,7 @@ export default function Navbar() {
 										href={item.path}
 										className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium transition-colors ${
 											isActive
-												? 'bg-primary/80 text-primary-foreground'
+												? 'bg-primary text-primary-foreground'
 												: 'text-muted-foreground hover:text-primary-foreground hover:bg-primary/80'
 										}`}
 									>

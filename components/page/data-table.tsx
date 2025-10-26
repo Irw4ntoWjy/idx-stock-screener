@@ -43,7 +43,7 @@ export function DataTable<TData, TValue>({
 								return (
 									<TableHead
 										key={header.id}
-										className="pl-3 bg-muted/50"
+										className="pl-3 bg-muted"
 									>
 										{header.isPlaceholder
 											? null

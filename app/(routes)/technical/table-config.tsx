@@ -7,7 +7,12 @@ import {
 	getTrendColor,
 } from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
-import { TrendingDown, TrendingUp } from 'lucide-react';
+import {
+	ChartLine,
+	TrendingDown,
+	TrendingUp,
+} from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 export type TechnicalColumn = {
 	code: string;
@@ -77,7 +82,7 @@ export const technicalColumns: ColumnDef<TechnicalColumn>[] = [
 		accessorKey: 'open',
 		header: 'Open',
 		cell: ({ row }) => (
-			<div className="font-semibold text-muted-foreground">
+			<div className="font-semibold text-card-foreground">
 				{formatNumber(row.getValue('open'))}
 			</div>
 		),
@@ -86,7 +91,7 @@ export const technicalColumns: ColumnDef<TechnicalColumn>[] = [
 		accessorKey: 'close',
 		header: 'Close',
 		cell: ({ row }) => (
-			<div className="font-semibold text-muted-foreground">
+			<div className="font-semibold text-card-foreground">
 				{formatNumber(row.getValue('close'))}
 			</div>
 		),
@@ -133,7 +138,7 @@ export const technicalColumns: ColumnDef<TechnicalColumn>[] = [
 		accessorKey: 'ma5',
 		header: 'MA 5',
 		cell: ({ row }) => (
-			<div className="text-muted-foreground font-semibold">
+			<div className="text-card-foreground font-semibold">
 				{formatNumber(row.original.ma5)}
 			</div>
 		),
@@ -142,7 +147,7 @@ export const technicalColumns: ColumnDef<TechnicalColumn>[] = [
 		accessorKey: 'ma60',
 		header: 'MA 60',
 		cell: ({ row }) => (
-			<div className="text-muted-foreground font-semibold">
+			<div className="text-card-foreground font-semibold">
 				{formatNumber(row.original.ma60)}
 			</div>
 		),
@@ -151,7 +156,7 @@ export const technicalColumns: ColumnDef<TechnicalColumn>[] = [
 		accessorKey: 'ma200',
 		header: 'MA 200',
 		cell: ({ row }) => (
-			<div className="text-muted-foreground font-semibold">
+			<div className="text-card-foreground font-semibold">
 				{formatNumber(row.original.ma200)}
 			</div>
 		),
@@ -159,14 +164,18 @@ export const technicalColumns: ColumnDef<TechnicalColumn>[] = [
 	{
 		id: 'action',
 		header: '',
-		cell: () => {
+		cell: ({ row }) => {
+			const router = useRouter();
+
 			return (
 				<Button
 					size="sm"
-					onClick={() => {}}
+					onClick={() =>
+						router.push(`/chart/${row.original.code}`)
+					}
 					className="bg-primary hover:bg-primary/90 text-primary-foreground"
 				>
-					Chart
+					<ChartLine className="size-4" />
 				</Button>
 			);
 		},

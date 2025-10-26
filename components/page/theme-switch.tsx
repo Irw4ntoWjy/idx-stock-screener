@@ -27,7 +27,12 @@ export function ThemeSwitch() {
 				onCheckedChange={(checked) =>
 					setTheme(checked ? 'dark' : 'light')
 				}
-				className="transition-all duration-300 cursor-pointer"
+				className={`
+					transition-all duration-300 cursor-pointer
+					border-2 border-gray-400 dark:border-gray-600
+					data-[state=checked]:border-primary
+					data-[state=unchecked]:border-gray-300
+				`}
 			/>
 			{isDark ? (
 				<Moon className="h-4 w-4 text-primary transition-transform duration-300 rotate-0" />

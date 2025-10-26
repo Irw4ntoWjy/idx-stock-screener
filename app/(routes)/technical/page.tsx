@@ -3,14 +3,9 @@
 import { DataTable } from '@/components/page/data-table';
 import { DataTablePagination } from '@/components/page/pagination';
 import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
-import {
-	ChartCandlestick,
-	FileDown,
-	Search,
-} from 'lucide-react';
+import { FileDown, Search } from 'lucide-react';
 import { useState } from 'react';
 import {
 	TechnicalColumn,
@@ -332,70 +327,60 @@ export default function Technical() {
 						Technical Analysis & Watchlist
 					</h2>
 					<p className="text-muted-foreground">
-						Analyze Indonesian stocks using technical indicators
-						and manage your watchlist
+						Analyze Indonesian stocks using technical indicators.
 					</p>
 				</div>
-				<Button
-					onClick={handleExport}
-					className="bg-primary hover:bg-primary/90"
-				>
-					<FileDown className="mr-2 size-4" />
-					Export to Excel
-				</Button>
-			</div>
 
-			<Card className="bg-table border-border pb-0.5">
-				<div className="px-6 py-2">
-					<div className="flex flex-col gap-4 mb-6">
-						<div className="flex items-center gap-2">
-							<div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center">
-								<ChartCandlestick className="size-4 text-foreground" />
-							</div>
-							<h3 className="text-lg font-semibold text-foreground">
-								Technical Screener
-							</h3>
-						</div>
-						<div className="relative flex-1 max-w-md">
-							<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
-							<Input
-								placeholder="Search stocks..."
-								value={searchQuery}
-								onChange={(e) => setSearchQuery(e.target.value)}
-								className="pl-10 border-border"
-							/>
-						</div>
+				<div className="flex gap-3">
+					<div className="relative flex-1 max-w-md">
+						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
+						<Input
+							placeholder="Search stocks..."
+							value={searchQuery}
+							onChange={(e) => setSearchQuery(e.target.value)}
+							className="pl-10 border-border"
+						/>
 					</div>
 
-					<ScrollArea.Root
-						className="w-full rounded-md border border-border"
-						style={{ height: 'calc(100vh - 26.563rem)' }}
+					<Button
+						onClick={handleExport}
+						className="bg-primary hover:bg-primary/90"
 					>
-						<ScrollArea.Viewport className="h-full w-full">
-							<div className="min-w-max">
-								<DataTable
-									columns={technicalColumns}
-									data={paginatedData}
-								/>
-							</div>
-						</ScrollArea.Viewport>
-						<ScrollArea.Scrollbar
-							orientation="vertical"
-							className="w-1 pt-10 pb-1"
-						>
-							<ScrollArea.Thumb className="bg-muted-foreground dark:bg-primary rounded-full" />
-						</ScrollArea.Scrollbar>
-						<ScrollArea.Corner className="bg-secondary" />
-					</ScrollArea.Root>
-
-					<DataTablePagination
-						currentPage={currentPage}
-						totalItems={totalItems}
-						itemsPerPage={itemsPerPage}
-						onPageChange={setCurrentPage}
-					/>
+						<FileDown className="mr-2 size-4" />
+						Export to Excel
+					</Button>
 				</div>
-			</Card>
+			</div>
+
+			<div className="py-2">
+				<ScrollArea.Root
+					className="w-full rounded-md border border-border"
+					style={{ height: 'calc(100vh - 17.85rem)' }}
+				>
+					<ScrollArea.Viewport className="h-full w-full">
+						<div className="min-w-max">
+							<DataTable
+								columns={technicalColumns}
+								data={paginatedData}
+							/>
+						</div>
+					</ScrollArea.Viewport>
+					<ScrollArea.Scrollbar
+						orientation="vertical"
+						className="w-1 pt-10 pb-1"
+					>
+						<ScrollArea.Thumb className="bg-muted-foreground dark:bg-primary rounded-full" />
+					</ScrollArea.Scrollbar>
+					<ScrollArea.Corner className="bg-secondary" />
+				</ScrollArea.Root>
+
+				<DataTablePagination
+					currentPage={currentPage}
+					totalItems={totalItems}
+					itemsPerPage={itemsPerPage}
+					onPageChange={setCurrentPage}
+				/>
+			</div>
 		</div>
 	);
 }
