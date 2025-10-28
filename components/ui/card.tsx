@@ -10,7 +10,7 @@ function Card({
 		<div
 			data-slot="card"
 			className={cn(
-				'bg-secondary text-card-foreground flex flex-col gap-6 rounded-xl border py-3 shadow-sm',
+				'bg-secondary text-card-foreground flex flex-col  rounded-xl border py-3 shadow-sm',
 				className
 			)}
 			{...props}
