@@ -2,6 +2,7 @@ import z4 from 'zod/v4';
 
 export const technicalPage = z4.object({
 	stockCode: z4.string(),
+	date: z4.string(),
 	name: z4.string(),
 	prevClose: z4.number(),
 	openPrice: z4.number(),

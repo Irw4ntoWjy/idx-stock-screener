@@ -22,7 +22,7 @@ const fetchTechnicalData = async (
 
 	const response = await fetch(url, {
 		headers: { 'Content-Type': 'application/json' },
-		cache: 'force-cache',
+		cache: 'no-store',
 	});
 
 	if (!response.ok) {

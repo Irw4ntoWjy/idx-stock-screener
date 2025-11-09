@@ -26,7 +26,7 @@ export function DataTablePagination({
 
 	if (totalPages <= 1) return null;
 
-	const startIndex = (currentPage - 1) * itemsPerPage;
+	const startIndex = currentPage * itemsPerPage;
 	const endIndex = Math.min(
 		startIndex + itemsPerPage,
 		totalItems

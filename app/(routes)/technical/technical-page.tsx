@@ -6,9 +6,10 @@ import { Input } from '@/components/ui/input';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { FileDown, Search } from 'lucide-react';
 import { useState } from 'react';
-import { technicalColumns } from './table-config';
+import { getTechnicalColumns } from './table-config';
 import { technicalPage } from './technical-page-schema';
 import { Pagination } from '@/lib/global-type';
+import { DataTablePagination } from '@/components/page/pagination';
 
 interface TechnicalPageProps {
 	data: Pagination<typeof technicalPage>;
@@ -18,7 +19,15 @@ export default function TechnicalPage({
 	data,
 }: TechnicalPageProps) {
 	const [searchQuery, setSearchQuery] = useState('');
-	console.log(data);
+	// extract ma keys from data
+	const maKeys =
+		data.content.length > 0
+			? Object.keys(data.content[0].movingAverage).sort(
+					(a, b) => parseInt(a) - parseInt(b)
+			  )
+			: [];
+	const columns = getTechnicalColumns(maKeys);
+
 	const handleExport = () => {};
 	return (
 		<div className="bg-card w-full h-full border border-t-0 rounded-b-lg px-4 py-4">
@@ -61,10 +70,7 @@ export default function TechnicalPage({
 				>
 					<ScrollArea.Viewport className="h-full w-full">
 						<div className="min-w-max">
-							<DataTable
-								columns={technicalColumns}
-								data={data.content}
-							/>
+							<DataTable columns={columns} data={data.content} />
 						</div>
 					</ScrollArea.Viewport>
 					<ScrollArea.Scrollbar
@@ -76,12 +82,12 @@ export default function TechnicalPage({
 					<ScrollArea.Corner className="bg-secondary" />
 				</ScrollArea.Root>
 
-				{/* <DataTablePagination
-					currentPage={currentPage}
-					totalItems={totalItems}
-					itemsPerPage={itemsPerPage}
-					onPageChange={setCurrentPage}
-				/> */}
+				<DataTablePagination
+					currentPage={data.page.page}
+					totalItems={data.page.total}
+					itemsPerPage={data.page.size}
+					onPageChange={() => {}}
+				/>
 			</div>
 		</div>
 	);
