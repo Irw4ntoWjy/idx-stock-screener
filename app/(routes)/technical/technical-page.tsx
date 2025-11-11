@@ -1,18 +1,19 @@
 'use client';
 
 import { DataTable } from '@/components/page/data-table';
+import { DataTablePagination } from '@/components/page/pagination';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Pagination } from '@/lib/global-type';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { FileDown, Search } from 'lucide-react';
 import { useState } from 'react';
 import { getTechnicalColumns } from './table-config';
 import { technicalPage } from './technical-page-schema';
-import { Pagination } from '@/lib/global-type';
-import { DataTablePagination } from '@/components/page/pagination';
 
 interface TechnicalPageProps {
 	data: Pagination<typeof technicalPage>;
+	fetchData: () => void;
 }
 
 export default function TechnicalPage({
