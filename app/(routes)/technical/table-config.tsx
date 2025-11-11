@@ -5,6 +5,7 @@ import { ColumnDef } from '@tanstack/react-table';
 import { ChartLine } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { TechnicalPageSchema } from './technical-page-schema';
+import { formatNumber } from '@/lib/utils';
 
 const createMAColumns = (
 	maKeys: string[]
@@ -17,7 +18,7 @@ const createMAColumns = (
 			const value = getValue<number>();
 			return (
 				<div className="text-card-foreground font-semibold">
-					{value ?? ''}
+					{formatNumber(value)}
 				</div>
 			);
 		},
@@ -50,7 +51,7 @@ export const getTechnicalColumns = (
 		header: 'Prev Close',
 		cell: ({ row }) => (
 			<div className="font-semibold text-foreground">
-				{row.original.prevClose}
+				{formatNumber(row.original.prevClose)}
 			</div>
 		),
 	},
@@ -59,7 +60,7 @@ export const getTechnicalColumns = (
 		header: 'Open',
 		cell: ({ row }) => (
 			<div className="font-semibold text-card-foreground">
-				{row.original.openPrice}
+				{formatNumber(row.original.openPrice)}
 			</div>
 		),
 	},
@@ -68,7 +69,7 @@ export const getTechnicalColumns = (
 		header: 'Close',
 		cell: ({ row }) => (
 			<div className="font-semibold text-card-foreground">
-				{row.original.closePrice}
+				{formatNumber(row.original.closePrice)}
 			</div>
 		),
 	},
@@ -77,7 +78,9 @@ export const getTechnicalColumns = (
 		header: 'Volume (Lot)',
 		cell: ({ row }) => (
 			<div className="text-foreground font-semibold">
-				{`${row.original.volume} Lot`}
+				{row.original.volume
+					? `${formatNumber(row.original.volume)} Lot`
+					: ''}
 			</div>
 		),
 	},

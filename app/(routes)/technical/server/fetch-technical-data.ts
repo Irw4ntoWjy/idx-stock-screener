@@ -3,7 +3,15 @@
 import { Pagination } from '@/lib/global-type';
 import { technicalPage } from '../technical-page-schema';
 
-let params = { page: 0, size: 20, filter: '' };
+// default params
+let params = { page: 1, size: 20, filter: '' };
+
+// function to update table params
+export async function setTechnicalParams(
+	newParams: Partial<typeof params>
+) {
+	params = { ...params, ...newParams };
+}
 
 export const fetchTechnicalData = async (): Promise<
 	Pagination<typeof technicalPage>

@@ -7,19 +7,35 @@ import { Input } from '@/components/ui/input';
 import { Pagination } from '@/lib/global-type';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { FileDown, Search } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useTransition } from 'react';
 import { getTechnicalColumns } from './table-config';
 import { technicalPage } from './technical-page-schema';
+import { updateTechnicalData } from './server/actions';
+import { debounce } from '@/lib/utils';
+import { Spinner } from '@/components/page/spinner';
 
 interface TechnicalPageProps {
 	data: Pagination<typeof technicalPage>;
-	fetchData: () => void;
 }
 
 export default function TechnicalPage({
 	data,
 }: TechnicalPageProps) {
-	const [searchQuery, setSearchQuery] = useState('');
+	const [filter, setFilter] = useState('');
+	const [isPending, startTransition] = useTransition();
+	console.log(data.page);
+
+	// logic for refetching data
+	const refetchTechnicaldata = (updates: {
+		page?: number;
+		size?: number;
+		filter?: string;
+	}) => {
+		startTransition(() => {
+			updateTechnicalData(updates);
+		});
+	};
+
 	// extract ma keys from data
 	const maKeys =
 		data.content.length > 0
@@ -48,8 +64,15 @@ export default function TechnicalPage({
 						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
 						<Input
 							placeholder="Search stocks..."
-							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
+							value={filter}
+							onChange={(e) => {
+								const value = e.target.value;
+								setFilter(value);
+
+								debounce(() =>
+									refetchTechnicaldata({ filter: value })
+								);
+							}}
 							className="pl-10 border-border"
 						/>
 					</div>
@@ -87,9 +110,20 @@ export default function TechnicalPage({
 					currentPage={data.page.page}
 					totalItems={data.page.total}
 					itemsPerPage={data.page.size}
-					onPageChange={() => {}}
+					onPageChange={(newPage) =>
+						refetchTechnicaldata({ page: newPage })
+					}
 				/>
 			</div>
+
+			{isPending && (
+				<div className="fixed inset-0 bg-black/20 flex items-center justify-center z-50">
+					<div className="bg-white p-4 rounded-lg text-sm flex items-center gap-3">
+						<Spinner size={18} />
+						Loading...
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
