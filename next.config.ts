@@ -1,7 +1,9 @@
-import type { NextConfig } from "next";
+import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-  /* config options here */
+	env: {
+		IDX_STOCK_SCREENER_BE: process.env.IDX_STOCK_SCREENER_BE,
+	},
 };
 
 export default nextConfig;
