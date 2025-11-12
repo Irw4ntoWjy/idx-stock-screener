@@ -1,46 +1,44 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import {
-	formatNumber,
-	formatPercent,
-	getTrendColor,
-} from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
-import {
-	ChartLine,
-	TrendingDown,
-	TrendingUp,
-} from 'lucide-react';
+import { ChartLine } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { TechnicalPageSchema } from './technical-page-schema';
+import { formatNumber } from '@/lib/utils';
 
-export type TechnicalColumn = {
-	code: string;
-	name: string;
-	prevClose: number;
-	prevPriceChange: number;
-	price: number;
-	open: number;
-	close: number;
-	change: number;
-	volume: number;
-	ma5: number;
-	ma60: number;
-	ma200: number;
+const createMAColumns = (
+	maKeys: string[]
+): ColumnDef<TechnicalPageSchema>[] => {
+	return maKeys.map((maKey) => ({
+		id: `ma${maKey}`,
+		header: `MA ${maKey}`,
+		accessorFn: (row) => row.movingAverage[maKey],
+		cell: ({ getValue }) => {
+			const value = getValue<number>();
+			return (
+				<div className="text-card-foreground font-semibold">
+					{formatNumber(value)}
+				</div>
+			);
+		},
+	}));
 };
 
-export const technicalColumns: ColumnDef<TechnicalColumn>[] = [
+export const getTechnicalColumns = (
+	maKeys: string[] = []
+): ColumnDef<TechnicalPageSchema>[] => [
 	{
-		accessorKey: 'code',
+		id: 'code',
 		header: 'Code',
 		cell: ({ row }) => (
 			<div className="font-bold text-cyan-500">
-				{row.original.code}
+				{row.original.stockCode}
 			</div>
 		),
 	},
 	{
-		accessorKey: 'name',
+		id: 'name',
 		header: 'Name',
 		cell: ({ row }) => (
 			<div className="text-[16px] text-foreground">
@@ -49,129 +47,54 @@ export const technicalColumns: ColumnDef<TechnicalColumn>[] = [
 		),
 	},
 	{
-		accessorKey: 'prevClose',
+		id: 'prevClose',
 		header: 'Prev Close',
 		cell: ({ row }) => (
 			<div className="font-semibold text-foreground">
-				{formatNumber(row.getValue('prevClose'))}
+				{formatNumber(row.original.prevClose)}
 			</div>
 		),
 	},
 	{
-		header: 'Prev (%)',
-		accessorKey: 'prevPriceChange',
-		cell: ({ row }) => {
-			const value = row.original.prevPriceChange;
-			const isUp = value >= 0;
-			return (
-				<div className={`font-semibold ${getTrendColor(value)}`}>
-					<div className="flex items-center gap-1">
-						{isUp ? (
-							<TrendingUp className="size-3" />
-						) : (
-							<TrendingDown className="size-3" />
-						)}
-						{formatPercent(value)}
-					</div>
-				</div>
-			);
-		},
-	},
-
-	{
-		accessorKey: 'open',
+		id: 'open',
 		header: 'Open',
 		cell: ({ row }) => (
 			<div className="font-semibold text-card-foreground">
-				{formatNumber(row.getValue('open'))}
+				{formatNumber(row.original.openPrice)}
 			</div>
 		),
 	},
 	{
-		accessorKey: 'close',
+		id: 'close',
 		header: 'Close',
 		cell: ({ row }) => (
 			<div className="font-semibold text-card-foreground">
-				{formatNumber(row.getValue('close'))}
+				{formatNumber(row.original.closePrice)}
 			</div>
 		),
 	},
 	{
-		accessorKey: 'price',
-		header: 'Price',
-		cell: ({ row }) => (
-			<div className="font-semibold text-foreground">
-				{formatNumber(row.original.price)}
-			</div>
-		),
-	},
-	{
-		accessorKey: 'change',
-		header: 'Change (%)',
-		cell: ({ row }) => {
-			const value = row.original.change;
-			const isUp = value >= 0;
-			return (
-				<div className={`font-semibold ${getTrendColor(value)}`}>
-					<div className="flex items-center gap-1">
-						{isUp ? (
-							<TrendingUp className="size-3" />
-						) : (
-							<TrendingDown className="size-3" />
-						)}
-						{formatPercent(value)}
-					</div>
-				</div>
-			);
-		},
-	},
-	{
-		accessorKey: 'volume',
+		id: 'volume',
 		header: 'Volume (Lot)',
 		cell: ({ row }) => (
 			<div className="text-foreground font-semibold">
-				{`${formatNumber(row.original.volume)} Lot`}
+				{row.original.volume
+					? `${formatNumber(row.original.volume)} Lot`
+					: ''}
 			</div>
 		),
 	},
-	{
-		accessorKey: 'ma5',
-		header: 'MA 5',
-		cell: ({ row }) => (
-			<div className="text-card-foreground font-semibold">
-				{formatNumber(row.original.ma5)}
-			</div>
-		),
-	},
-	{
-		accessorKey: 'ma60',
-		header: 'MA 60',
-		cell: ({ row }) => (
-			<div className="text-card-foreground font-semibold">
-				{formatNumber(row.original.ma60)}
-			</div>
-		),
-	},
-	{
-		accessorKey: 'ma200',
-		header: 'MA 200',
-		cell: ({ row }) => (
-			<div className="text-card-foreground font-semibold">
-				{formatNumber(row.original.ma200)}
-			</div>
-		),
-	},
+	...createMAColumns(maKeys),
 	{
 		id: 'action',
 		header: '',
 		cell: ({ row }) => {
 			const router = useRouter();
-
 			return (
 				<Button
 					size="sm"
 					onClick={() =>
-						router.push(`/chart/${row.original.code}`)
+						router.push(`/chart/${row.original.stockCode}`)
 					}
 					className="bg-primary hover:bg-primary/90 text-primary-foreground"
 				>
