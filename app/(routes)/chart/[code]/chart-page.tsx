@@ -4,38 +4,61 @@ import TradingViewWidget from '@/components/page/trading-view-widget';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, SquareArrowOutUpRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { ChartPageSchema } from './chart-page-schema';
 
 interface ChartPageClientProps {
 	code: string;
+	data: ChartPageSchema;
 }
 
-export function ChartPageClient({ code }: ChartPageClientProps) {
+export function ChartPageClient({
+	code,
+	data,
+}: ChartPageClientProps) {
 	const router = useRouter();
+
+	// formatting moving averages
+	const formatMovingAverages = (
+		source: ChartPageSchema['source']
+	): string => {
+		return Object.entries(source)
+			.map(([period, value]) => `MA${period}: ${value}`)
+			.join(', ');
+	};
+
 	return (
 		<div className="bg-card w-full h-full border border-t-0 rounded-b-lg px-4 py-4 gap-3 flex flex-col">
-			<div className="flex justify-between">
-				<Button
-					variant="outline"
-					onClick={() => router.back()}
-					className="inline-flex w-fit gap-2 !bg-primary justify-start text-white hover:text-white/50 hover:bg-primary/50"
-				>
-					<ArrowLeft className="size-4" />
-					<span className="font-bold">{code}</span>
-				</Button>
+			<div className="flex justify-between items-center">
+				<div className="flex items-center gap-3">
+					<Button
+						variant="outline"
+						onClick={() => router.back()}
+						className="inline-flex w-fit gap-2 !bg-primary justify-start text-white hover:text-white/50 hover:bg-primary/50"
+					>
+						<ArrowLeft className="size-4" />
+					</Button>
+					<div>
+						<span className="font-medium">
+							{data.name} ({code})
+						</span>
+					</div>
+				</div>
 
-				<Button
-					variant="outline"
-					onClick={() => {
-						window.open(
-							`https://www.tradingview.com/chart/?symbol=${code}`,
-							'_blank'
-						);
-					}}
-					className="inline-flex w-fit gap-2 !bg-primary justify-start text-white hover:text-white/50 hover:bg-primary/50"
-				>
-					<SquareArrowOutUpRight className="size-4" />
-					View on Trading View
-				</Button>
+				<div className="flex items-center gap-2">
+					<Button
+						variant="outline"
+						onClick={() => {
+							window.open(
+								`https://www.tradingview.com/chart/?symbol=${code}`,
+								'_blank'
+							);
+						}}
+						className="inline-flex w-fit gap-2 !bg-primary justify-start text-white hover:text-white/50 hover:bg-primary/50"
+					>
+						<SquareArrowOutUpRight className="size-4" />
+						View on Trading View
+					</Button>
+				</div>
 			</div>
 
 			<div className="w-full h-[calc(100vh-15rem)]">

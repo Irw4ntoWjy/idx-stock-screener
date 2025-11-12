@@ -9,10 +9,18 @@ import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { FileDown, Search } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { getTechnicalColumns } from './table-config';
-import { technicalPage } from './technical-page-schema';
-import { updateTechnicalData } from './server/actions';
-import { debounce } from '@/lib/utils';
+import {
+	technicalPage,
+	TechnicalPageSchema,
+} from './technical-page-schema';
+import {
+	getExportToExcelData,
+	updateTechnicalData,
+} from './server/actions';
+import { debounce, formatNumber } from '@/lib/utils';
 import { Spinner } from '@/components/page/spinner';
+import { toast } from 'sonner';
+import * as XLSX from 'xlsx';
 
 interface TechnicalPageProps {
 	data: Pagination<typeof technicalPage>;
@@ -23,7 +31,6 @@ export default function TechnicalPage({
 }: TechnicalPageProps) {
 	const [filter, setFilter] = useState('');
 	const [isPending, startTransition] = useTransition();
-	console.log(data.page);
 
 	// logic for refetching data
 	const refetchTechnicaldata = (updates: {
@@ -45,7 +52,61 @@ export default function TechnicalPage({
 			: [];
 	const columns = getTechnicalColumns(maKeys);
 
-	const handleExport = () => {};
+	const handleExport = async () => {
+		const excelData =
+			(await getExportToExcelData()) as TechnicalPageSchema[];
+		if (excelData.length === 0) {
+			toast.warning('No data to be Exported');
+			return;
+		}
+
+		const exportData = excelData.map((row) => {
+			// mapped row data
+			const exportRow: Record<string, string> = {};
+			exportRow['Code'] = row.stockCode;
+			exportRow['Name'] = row.name;
+			exportRow['Prev Close'] = formatNumber(row.prevClose);
+			exportRow['Open'] = formatNumber(row.openPrice);
+			exportRow['Close'] = formatNumber(row.closePrice);
+			exportRow['Volume (Lot)'] = row.volume
+				? `${formatNumber(row.volume)} Lot`
+				: '';
+			maKeys.forEach((key) => {
+				exportRow[`MA ${key}`] = formatNumber(
+					row.movingAverage[key] || 0
+				);
+			});
+
+			return exportRow;
+		});
+
+		// create sheet
+		const newTab = XLSX.utils.book_new();
+		const newSheet = XLSX.utils.json_to_sheet(exportData);
+
+		const colWidths = [
+			{ wch: 8 },
+			{ wch: 36 },
+			{ wch: 12 },
+			{ wch: 10 },
+			{ wch: 10 },
+			{ wch: 15 },
+			...maKeys.map(() => ({ wch: 12 })),
+		];
+		newSheet['!cols'] = colWidths;
+
+		XLSX.utils.book_append_sheet(
+			newTab,
+			newSheet,
+			'Technical Analysis'
+		);
+		XLSX.writeFile(
+			newTab,
+			`technical-analysis-${
+				new Date().toISOString().split('T')[0]
+			}.xlsx`
+		);
+	};
 	return (
 		<div className="bg-card w-full h-full border border-t-0 rounded-b-lg px-4 py-4">
 			<div className="mb-2 flex items-center justify-between">
