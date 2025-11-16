@@ -1,11 +1,6 @@
-import {
-	TrendingUp,
-	ArrowRight,
-	Mail,
-	Lock,
-	UserPlus,
-	Key,
-} from 'lucide-react';
+'use client';
+
+import { TrendingUp, Key } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -17,10 +12,35 @@ import {
 	CardTitle,
 } from '@/components/ui/card';
 import Link from 'next/link';
+import { useState } from 'react';
+import { fetchLoginInfo } from './server/login';
+import { toast } from 'sonner';
 
 export default function Login() {
+	const [username, setUsername] = useState('');
+	const [password, setPassword] = useState('');
+
+	const handleSubmit = async (
+		e: React.FormEvent<HTMLFormElement>
+	) => {
+		e.preventDefault();
+
+		if (!username || !password) {
+			toast.warning('Username/password cannot be empty');
+			return;
+		}
+
+		try {
+			await fetchLoginInfo(username, password);
+		} catch (error) {
+			const message =
+				error instanceof Error ? error.message : 'Login failed';
+			toast.error(message);
+		}
+	};
+
 	return (
-		<div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 dark">
+		<div className="flex items-center justify-center h-full">
 			<Card className="w-full max-w-md bg-white border-0 shadow-xl dark:border-gray-700 p-8">
 				<CardHeader className="space-y-1">
 					<div className="flex justify-center gap-3 items-center">
@@ -34,18 +54,20 @@ export default function Login() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-4 p-6">
-					<form className="space-y-4">
+					<form className="space-y-4" onSubmit={handleSubmit}>
 						<div className="space-y-2">
 							<Label
 								htmlFor="email"
 								className="flex items-center gap-2 text-black"
 							>
-								Email
+								Username
 							</Label>
 							<Input
-								id="email"
-								type="email"
-								placeholder="your@email.com"
+								id="username"
+								type="text"
+								placeholder="Username"
+								value={username}
+								onChange={(e) => setUsername(e.target.value)}
 								required
 							/>
 						</div>
@@ -60,7 +82,9 @@ export default function Login() {
 								id="password"
 								type="password"
 								placeholder="••••••••"
-								className="text-white focus:border-blue-500 focus:ring-blue-500"
+								value={password}
+								onChange={(e) => setPassword(e.target.value)}
+								className=" focus:border-blue-500 focus:ring-blue-500"
 								required
 							/>
 						</div>

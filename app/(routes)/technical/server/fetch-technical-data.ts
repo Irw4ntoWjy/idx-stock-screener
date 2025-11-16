@@ -28,8 +28,15 @@ export const fetchTechnicalData = async (): Promise<
 	url.searchParams.append('size', size.toString());
 	if (filter) url.searchParams.append('filter', filter);
 
+	const credentials = Buffer.from(
+		`${process.env.BACKEND_USERNAME}:${process.env.BACKEND_PASSWORD}`
+	).toString('base64');
+
 	const res = await fetch(url, {
-		headers: { 'Content-Type': 'application/json' },
+		headers: {
+			'Content-Type': 'application/json',
+			Authorization: `Basic ${credentials}`,
+		},
 		cache: 'force-cache',
 		next: { tags: ['technical-data'] },
 	});
