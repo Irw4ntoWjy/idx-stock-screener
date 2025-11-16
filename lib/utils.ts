@@ -5,17 +5,20 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
-export const formatNumber = (num: number) => {
-	return new Intl.NumberFormat('id-ID').format(num);
+export const formatNumber = (
+	num: number | undefined
+): string => {
+	if (!num) return '';
+	return num.toLocaleString('id-ID');
 };
 
-export const formatPercent = (num: number) => {
-	return `${num >= 0 ? '+' : ''}${num.toFixed(2)}%`;
+let debounceTimer: ReturnType<typeof setTimeout>;
+export const debounce = (
+	callback: () => void,
+	timeout = 800
+) => {
+	clearTimeout(debounceTimer);
+	debounceTimer = setTimeout(() => {
+		callback();
+	}, timeout);
 };
-
-export const getTrendColor = (value: number) =>
-	value > 0
-		? 'text-green-500'
-		: value < 0
-		? 'text-red-500'
-		: 'text-muted-foreground';

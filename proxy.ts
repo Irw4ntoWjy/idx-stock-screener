@@ -5,15 +5,15 @@ export function proxy(req: NextRequest) {
 	const isLoginPage = req.nextUrl.pathname.startsWith('/login');
 
 	// redirect when user not login
-	if (!token && !isLoginPage) {
-		const loginUrl = new URL('/login', req.url);
-		return NextResponse.redirect(loginUrl);
-	}
+	// if (!token && !isLoginPage) {
+	// 	const loginUrl = new URL('/login', req.url);
+	// 	return NextResponse.redirect(loginUrl);
+	// }
 
-	if (token && isLoginPage) {
-		const homeUrl = new URL('/technical', req.url);
-		return NextResponse.redirect(homeUrl);
-	}
+	// if (token && isLoginPage) {
+	// 	const homeUrl = new URL('/technical', req.url);
+	// 	return NextResponse.redirect(homeUrl);
+	// }
 
 	return NextResponse.next();
 }
