@@ -1,8 +1,7 @@
-import Navbar from '@/components/page/navbar';
 import type { Metadata } from 'next';
-import { ThemeProvider } from 'next-themes';
-import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
+import { Geist, Geist_Mono } from 'next/font/google';
+import { Toaster } from 'sonner';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -15,7 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-	title: 'IDX Stocks',
+	title: 'IDX Stocks Screener',
 	description: 'IDX Stocks Watchlist',
 };
 
@@ -29,16 +28,8 @@ export default function RootLayout({
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} h-full flex flex-col antialiased p-6`}
 			>
-				<ThemeProvider
-					attribute="class"
-					defaultTheme="system"
-					enableSystem
-				>
-					<Navbar />
-					<main className="flex-1 overflow-hidden">
-						{children}
-					</main>
-				</ThemeProvider>
+				{children}
+				<Toaster richColors position="top-center" />
 			</body>
 		</html>
 	);

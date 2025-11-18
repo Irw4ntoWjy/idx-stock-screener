@@ -11,7 +11,6 @@ export const fetchChartData = async (
 	const res = await fetch(`${backendUrl}/idx-stocks/${code}`, {
 		headers: { 'Content-Type': 'application/json' },
 		cache: 'force-cache',
-		next: { tags: ['technical-data'] },
 	});
 
 	if (!res.ok)
