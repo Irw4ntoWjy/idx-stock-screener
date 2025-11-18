@@ -1,6 +1,11 @@
 'use client';
 
-import { BarChart3, FileText, Search } from 'lucide-react';
+import {
+	BarChart3,
+	Building,
+	FileText,
+	Search,
+} from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { MarketStatusIndicator } from './market-status-indicator';
@@ -15,6 +20,11 @@ export default function Navbar() {
 			path: '/fundamental',
 			icon: FileText,
 			label: 'Fundamental',
+		},
+		{
+			path: '/company-profile',
+			icon: Building,
+			label: 'Company Profile',
 		},
 	];
 

@@ -43,7 +43,7 @@ export async function updateTechnicalData(data: {
 	revalidateTag('technical-data', { expire: 0 });
 }
 
-//get-export-excel
+// get-export-excel
 export const getExportToExcelData = async () => {
 	return fetcher(`/idx-stocks-ohlcv/get-export-excel-data`, {
 		tags: ['export-technical-data'],
