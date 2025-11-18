@@ -2,25 +2,25 @@
 
 import { DataTable } from '@/components/page/data-table';
 import { DataTablePagination } from '@/components/page/pagination';
+import { Spinner } from '@/components/page/spinner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Pagination } from '@/lib/global-type';
+import { debounce, formatNumber } from '@/lib/utils';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { FileDown, Search } from 'lucide-react';
 import { useState, useTransition } from 'react';
+import { toast } from 'sonner';
+import * as XLSX from 'xlsx';
+import {
+	getExportToExcelData,
+	updateTechnicalData,
+} from './server/fetch-technical-data';
 import { getTechnicalColumns } from './table-config';
 import {
 	technicalPage,
 	TechnicalPageSchema,
 } from './technical-page-schema';
-import {
-	getExportToExcelData,
-	updateTechnicalData,
-} from './server/actions';
-import { debounce, formatNumber } from '@/lib/utils';
-import { Spinner } from '@/components/page/spinner';
-import { toast } from 'sonner';
-import * as XLSX from 'xlsx';
 
 interface TechnicalPageProps {
 	data: Pagination<typeof technicalPage>;

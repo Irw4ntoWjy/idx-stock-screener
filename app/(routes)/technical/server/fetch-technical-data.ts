@@ -1,6 +1,8 @@
 'use server';
 
+import { fetcher } from '@/lib/fetcher';
 import { Pagination } from '@/lib/global-type';
+import { revalidateTag } from 'next/cache';
 import { technicalPage } from '../technical-page-schema';
 
 // default params
@@ -13,35 +15,37 @@ export async function setTechnicalParams(
 	params = { ...params, ...newParams };
 }
 
+// fetch-technical-data
 export const fetchTechnicalData = async (): Promise<
 	Pagination<typeof technicalPage>
 > => {
 	const { page, size, filter } = params;
 
-	const backendUrl = process.env.IDX_STOCK_SCREENER_BE;
-	if (!backendUrl) throw new Error('Backend URL not configured');
-
-	const url = new URL(
-		`${backendUrl}/idx-stocks-ohlcv/technical-data`
-	);
-	url.searchParams.append('page', page.toString());
-	url.searchParams.append('size', size.toString());
-	if (filter) url.searchParams.append('filter', filter);
-
-	const credentials = Buffer.from(
-		`${process.env.BACKEND_USERNAME}:${process.env.BACKEND_PASSWORD}`
-	).toString('base64');
-
-	const res = await fetch(url, {
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Basic ${credentials}`,
-		},
-		cache: 'force-cache',
-		next: { tags: ['technical-data'] },
+	const searchParams = new URLSearchParams({
+		page: page.toString(),
+		size: size.toString(),
+		...(filter && { filter }),
 	});
 
-	if (!res.ok)
-		throw new Error(`Fetch failed: ${res.statusText}`);
-	return res.json();
+	return fetcher<Pagination<typeof technicalPage>>(
+		`/idx-stocks-ohlcv/technical-data?${searchParams}`,
+		{ tags: ['technical-data'] }
+	);
+};
+
+// update-technical-data
+export async function updateTechnicalData(data: {
+	page?: number;
+	size?: number;
+	filter?: string;
+}) {
+	await setTechnicalParams(data);
+	revalidateTag('technical-data', { expire: 0 });
+}
+
+//get-export-excel
+export const getExportToExcelData = async () => {
+	return fetcher(`/idx-stocks-ohlcv/get-export-excel-data`, {
+		tags: ['export-technical-data'],
+	});
 };

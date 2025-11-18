@@ -14,14 +14,9 @@ export const fetchLoginInfo = async (
 	url.searchParams.append('username', username.toString());
 	url.searchParams.append('password', password.toString());
 
-	const credentials = Buffer.from(
-		`${process.env.BACKEND_USERNAME}:${process.env.BACKEND_PASSWORD}`
-	).toString('base64');
-
 	const res = await fetch(url, {
 		headers: {
 			'Content-Type': 'application/json',
-			Authorization: `Basic ${credentials}`,
 		},
 		cache: 'no-store',
 	});

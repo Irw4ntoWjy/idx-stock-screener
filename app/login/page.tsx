@@ -1,9 +1,6 @@
 'use client';
 
-import { TrendingUp, Key } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import {
 	Card,
 	CardContent,
@@ -11,10 +8,13 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Key, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
-import { fetchLoginInfo } from './server/login';
 import { toast } from 'sonner';
+import { fetchLoginInfo } from './server/login';
 
 export default function Login() {
 	const [username, setUsername] = useState('');
@@ -68,6 +68,7 @@ export default function Login() {
 								placeholder="Username"
 								value={username}
 								onChange={(e) => setUsername(e.target.value)}
+								className="border-gray-400/70"
 								required
 							/>
 						</div>
@@ -84,7 +85,7 @@ export default function Login() {
 								placeholder="••••••••"
 								value={password}
 								onChange={(e) => setPassword(e.target.value)}
-								className=" focus:border-blue-500 focus:ring-blue-500"
+								className=" focus:border-blue-500 focus:ring-blue-500 border-gray-400/70"
 								required
 							/>
 						</div>
