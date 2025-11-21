@@ -1,5 +1,6 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import * as XLSX from 'xlsx';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -21,4 +22,22 @@ export const debounce = (
 	debounceTimer = setTimeout(() => {
 		callback();
 	}, timeout);
+};
+
+export const exportToExcel = (
+	exportRow: Record<string, string>[],
+	colWidth: Record<'wch', number>[],
+	excelName: string
+) => {
+	// create sheet
+	const newTab = XLSX.utils.book_new();
+	const newSheet = XLSX.utils.json_to_sheet(exportRow);
+
+	newSheet['!cols'] = colWidth;
+
+	XLSX.utils.book_append_sheet(newTab, newSheet, excelName);
+	XLSX.writeFile(
+		newTab,
+		`${excelName}-${new Date().toISOString().split('T')[0]}.xlsx`
+	);
 };

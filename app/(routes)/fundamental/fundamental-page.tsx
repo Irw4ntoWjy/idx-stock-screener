@@ -15,50 +15,42 @@ import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { FileDown, Search } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
-
 import {
-	getTechnicalExportToExcel,
-	updateTechnicalData,
-} from './server/fetch-technical-data';
-import { getTechnicalColumns } from './table-config';
+	fundamentalPage,
+	FundamentalPageSchema,
+} from './fundamental-page-schema';
 import {
-	technicalPage,
-	TechnicalPageSchema,
-} from './technical-page-schema';
+	getFundamentalExportToExcel,
+	updateFundamentalData,
+} from './server/fetch-fundamental-data';
+import { getFundamentalColumns } from './table-config';
 
-interface TechnicalPageProps {
-	data: Pagination<typeof technicalPage>;
+interface FundamentalPageProps {
+	data: Pagination<typeof fundamentalPage>;
 }
 
-export default function TechnicalPage({
+export default function FundamentalPage({
 	data,
-}: TechnicalPageProps) {
+}: FundamentalPageProps) {
 	const [filter, setFilter] = useState('');
 	const [isPending, startTransition] = useTransition();
 
 	// logic for refetching data
-	const refetchTechnicaldata = (updates: {
+	const refetchFundamentalData = (updates: {
 		page?: number;
 		size?: number;
 		filter?: string;
 	}) => {
 		startTransition(() => {
-			updateTechnicalData(updates);
+			updateFundamentalData(updates);
 		});
 	};
 
-	// extract ma keys from data
-	const maKeys =
-		data.content.length > 0
-			? Object.keys(data.content[0].movingAverage).sort(
-					(a, b) => parseInt(a) - parseInt(b)
-			  )
-			: [];
-	const columns = getTechnicalColumns(maKeys);
+	const columns = getFundamentalColumns();
 
 	const handleExport = async () => {
 		const excelData =
-			(await getTechnicalExportToExcel()) as TechnicalPageSchema[];
+			(await getFundamentalExportToExcel()) as FundamentalPageSchema[];
 
 		if (excelData.length === 0) {
 			toast.warning('No data to be Exported');
@@ -68,34 +60,64 @@ export default function TechnicalPage({
 		const exportData = excelData.map((row) => {
 			// mapped row data
 			const exportRow: Record<string, string> = {};
+			exportRow['Sector'] = row.sector;
 			exportRow['Code'] = row.stockCode;
 			exportRow['Name'] = row.name;
-			exportRow['Prev Close'] = formatNumber(row.prevClose);
-			exportRow['Open'] = formatNumber(row.openPrice);
-			exportRow['Close'] = formatNumber(row.closePrice);
+			exportRow['Market Cap'] = row.marketCap
+				? formatNumber(row.marketCap).toString()
+				: '0';
 			exportRow['Volume (Lot)'] = row.volume
-				? `${formatNumber(row.volume)} Lot`
-				: '';
-			maKeys.forEach((key) => {
-				exportRow[`MA ${key}`] = formatNumber(
-					row.movingAverage[key] || 0
-				);
-			});
+				? formatNumber(row.volume).toString()
+				: '0';
+			exportRow['Close'] = row.closePrice
+				? formatNumber(row.closePrice).toString()
+				: '0';
+			exportRow['BV'] = row.bv
+				? formatNumber(row.bv).toString()
+				: '0';
+			exportRow['PBV'] = row.pbv
+				? formatNumber(row.pbv).toString()
+				: '0';
+			exportRow['PER'] = row.per
+				? formatNumber(row.per).toString()
+				: '0';
+			exportRow['EPS'] = row.eps
+				? formatNumber(row.eps).toString()
+				: '0';
+			exportRow['DER'] = row.der
+				? formatNumber(row.der).toString()
+				: '0';
+			exportRow['ROA (%)'] = row.roaPercent
+				? formatNumber(row.roaPercent).toString()
+				: '0';
+			exportRow['ROE (%)'] = row.roePercent
+				? formatNumber(row.roePercent).toString()
+				: '0';
+			exportRow['NPM (%)'] = row.npmPercent
+				? formatNumber(row.npmPercent).toString()
+				: '0';
 
 			return exportRow;
 		});
 
 		const colWidths = [
-			{ wch: 8 },
-			{ wch: 36 },
+			{ wch: 18 },
+			{ wch: 10 },
+			{ wch: 38 },
+			{ wch: 22 },
+			{ wch: 18 },
+			{ wch: 14 },
+			{ wch: 16 },
 			{ wch: 12 },
-			{ wch: 10 },
-			{ wch: 10 },
-			{ wch: 15 },
-			...maKeys.map(() => ({ wch: 12 })),
+			{ wch: 12 },
+			{ wch: 16 },
+			{ wch: 12 },
+			{ wch: 14 },
+			{ wch: 14 },
+			{ wch: 14 },
 		];
 
-		exportToExcel(exportData, colWidths, 'Technical Analysis');
+		exportToExcel(exportData, colWidths, 'Fundamental');
 	};
 
 	return (
@@ -104,10 +126,11 @@ export default function TechnicalPage({
 				<div>
 					<h2 className="text-2xl font-semibold mb-2 flex items-center gap-2">
 						<div className="h-8 w-1 bg-primary rounded-full" />
-						Technical Analysis & Watchlist
+						Fundamental Analysis
 					</h2>
 					<p className="text-muted-foreground">
-						Analyze Indonesian stocks using technical indicators.
+						View detailed fundamental metrics and financial
+						ratios for IDX stocks
 					</p>
 				</div>
 
@@ -122,7 +145,7 @@ export default function TechnicalPage({
 								setFilter(value);
 
 								debounce(() =>
-									refetchTechnicaldata({ filter: value })
+									refetchFundamentalData({ filter: value })
 								);
 							}}
 							className="pl-10 border-border"
@@ -155,7 +178,13 @@ export default function TechnicalPage({
 					>
 						<ScrollArea.Thumb className="bg-muted-foreground dark:bg-primary rounded-full" />
 					</ScrollArea.Scrollbar>
-					<ScrollArea.Corner className="bg-secondary" />
+					<ScrollArea.Scrollbar
+						orientation="horizontal"
+						className="h-1 bg-white dark:bg-card relative"
+					>
+						<div className="absolute inset-0 dark:bg-primary bg-muted-foreground rounded-full" />
+						<ScrollArea.Thumb className="relative z-10 bg-muted-foreground dark:bg-primary rounded-full" />
+					</ScrollArea.Scrollbar>
 				</ScrollArea.Root>
 
 				<DataTablePagination
@@ -163,7 +192,7 @@ export default function TechnicalPage({
 					totalItems={data.page.total}
 					itemsPerPage={data.page.size}
 					onPageChange={(newPage) =>
-						refetchTechnicaldata({ page: newPage })
+						refetchFundamentalData({ page: newPage })
 					}
 				/>
 			</div>

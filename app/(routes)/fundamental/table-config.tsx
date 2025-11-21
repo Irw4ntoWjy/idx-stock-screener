@@ -3,28 +3,12 @@
 import { Button } from '@/components/ui/button';
 import { formatNumber } from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
-import { ChartLine } from 'lucide-react';
+import { Building } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { FundamentalPageSchema } from './fundamental-page-schema';
 
-export type FundamentalColumn = {
-	sector: string;
-	code: string;
-	name: string;
-	marketCap: number;
-	volume: number;
-	close: number;
-	bv: number;
-	pbv: number;
-	per: number;
-	eps: number;
-	der: number;
-	roa: number;
-	roe: number;
-	npm: number;
-};
-
-export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
-	[
+export const getFundamentalColumns =
+	(): ColumnDef<FundamentalPageSchema>[] => [
 		{
 			accessorKey: 'sector',
 			header: 'Sector',
@@ -39,7 +23,7 @@ export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
 			header: 'Code',
 			cell: ({ row }) => (
 				<div className="font-bold text-cyan-500">
-					{row.original.code}
+					{row.original.stockCode}
 				</div>
 			),
 		},
@@ -57,7 +41,7 @@ export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
 			header: 'Market Cap',
 			cell: ({ row }) => (
 				<div className="font-semibold text-foreground">
-					{formatNumber(row.getValue('marketCap'))}
+					{formatNumber(row.original.marketCap)}
 				</div>
 			),
 		},
@@ -75,7 +59,7 @@ export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
 			header: 'Close',
 			cell: ({ row }) => (
 				<div className="font-semibold text-card-foreground">
-					{formatNumber(row.getValue('close'))}
+					{formatNumber(row.original.closePrice)}
 				</div>
 			),
 		},
@@ -84,7 +68,7 @@ export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
 			header: 'BV',
 			cell: ({ row }) => (
 				<div className="text-card-foreground font-semibold">
-					{formatNumber(row.original.bv)}
+					{row.original.bv ? formatNumber(row.original.bv) : 0}
 				</div>
 			),
 		},
@@ -93,7 +77,7 @@ export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
 			header: 'PBV',
 			cell: ({ row }) => (
 				<div className="text-card-foreground font-semibold">
-					{formatNumber(row.original.pbv)}
+					{row.original.pbv ? formatNumber(row.original.pbv) : 0}
 				</div>
 			),
 		},
@@ -102,7 +86,7 @@ export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
 			header: 'PER',
 			cell: ({ row }) => (
 				<div className="text-card-foreground font-semibold">
-					{formatNumber(row.original.per)}
+					{row.original.per ? formatNumber(row.original.per) : 0}
 				</div>
 			),
 		},
@@ -111,7 +95,7 @@ export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
 			header: 'EPS',
 			cell: ({ row }) => (
 				<div className="text-card-foreground font-semibold">
-					{formatNumber(row.original.eps)}
+					{row.original.eps ? formatNumber(row.original.eps) : 0}
 				</div>
 			),
 		},
@@ -120,7 +104,7 @@ export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
 			header: 'DER',
 			cell: ({ row }) => (
 				<div className="text-card-foreground font-semibold">
-					{formatNumber(row.original.der)}
+					{row.original.der ? formatNumber(row.original.der) : 0}
 				</div>
 			),
 		},
@@ -129,7 +113,9 @@ export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
 			header: 'ROA (%)',
 			cell: ({ row }) => (
 				<div className="text-card-foreground font-semibold">
-					{formatNumber(row.original.roa)}
+					{row.original.roaPercent
+						? formatNumber(row.original.roaPercent)
+						: 0}
 				</div>
 			),
 		},
@@ -138,7 +124,9 @@ export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
 			header: 'ROE (%)',
 			cell: ({ row }) => (
 				<div className="text-card-foreground font-semibold">
-					{formatNumber(row.original.roe)}
+					{row.original.roePercent
+						? formatNumber(row.original.roePercent)
+						: 0}
 				</div>
 			),
 		},
@@ -147,7 +135,9 @@ export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
 			header: 'NPM (%)',
 			cell: ({ row }) => (
 				<div className="text-card-foreground font-semibold">
-					{formatNumber(row.original.npm)}
+					{row.original.npmPercent
+						? formatNumber(row.original.npmPercent)
+						: 0}
 				</div>
 			),
 		},
@@ -161,11 +151,13 @@ export const fundamentalColumns: ColumnDef<FundamentalColumn>[] =
 					<Button
 						size="sm"
 						onClick={() =>
-							router.push(`/chart/${row.original.code}`)
+							router.push(
+								`/company-profile/${row.original.stockCode}`
+							)
 						}
 						className="bg-primary hover:bg-primary/90 text-primary-foreground"
 					>
-						<ChartLine className="size-4" />
+						<Building className="size-4" />
 					</Button>
 				);
 			},

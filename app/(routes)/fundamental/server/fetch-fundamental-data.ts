@@ -3,21 +3,21 @@
 import { fetcher } from '@/lib/fetcher';
 import { Pagination } from '@/lib/global-type';
 import { revalidateTag } from 'next/cache';
-import { technicalPage } from '../technical-page-schema';
+import { fundamentalPage } from '../fundamental-page-schema';
 
 // default params
 let params = { page: 1, size: 20, filter: '' };
 
 // function to update table params
-export async function setTechnicalParams(
+export async function setFundamentalParams(
 	newParams: Partial<typeof params>
 ) {
 	params = { ...params, ...newParams };
 }
 
 // fetch-technical-data
-export const fetchTechnicalData = async (): Promise<
-	Pagination<typeof technicalPage>
+export const fetchFundamentalData = async (): Promise<
+	Pagination<typeof fundamentalPage>
 > => {
 	const { page, size, filter } = params;
 
@@ -26,23 +26,26 @@ export const fetchTechnicalData = async (): Promise<
 		size: size.toString(),
 		...(filter && { filter }),
 	});
-	return fetcher<Pagination<typeof technicalPage>>(
-		`/idx-stocks-ohlcv/technical-data?${searchParams}`,
-		{ tags: ['technical-data'] }
+
+	return fetcher<Pagination<typeof fundamentalPage>>(
+		`/idx-stock-fundamentals/fundamental-data?${searchParams}`,
+		{ tags: ['fundamental-data'] }
 	);
 };
 
 // update-technical-data
-export async function updateTechnicalData(data: {
+export async function updateFundamentalData(data: {
 	page?: number;
 	size?: number;
 	filter?: string;
 }) {
-	await setTechnicalParams(data);
-	revalidateTag('technical-data', { expire: 0 });
+	await setFundamentalParams(data);
+	revalidateTag('fundamental-data', { expire: 0 });
 }
 
 // get-export-excel
-export const getTechnicalExportToExcel = async () => {
-	return fetcher(`/idx-stocks-ohlcv/get-export-excel-data`);
+export const getFundamentalExportToExcel = async () => {
+	return fetcher(
+		`/idx-stock-fundamentals/get-export-excel-data`
+	);
 };

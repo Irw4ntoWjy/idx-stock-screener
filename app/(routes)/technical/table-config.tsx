@@ -1,11 +1,11 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { formatNumber } from '@/lib/utils';
 import { ColumnDef } from '@tanstack/react-table';
 import { ChartLine } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { TechnicalPageSchema } from './technical-page-schema';
-import { formatNumber } from '@/lib/utils';
 
 const createMAColumns = (
 	maKeys: string[]
@@ -18,7 +18,7 @@ const createMAColumns = (
 			const value = getValue<number>();
 			return (
 				<div className="text-card-foreground font-semibold">
-					{formatNumber(value)}
+					{value ? formatNumber(value) : 0}
 				</div>
 			);
 		},
@@ -80,7 +80,7 @@ export const getTechnicalColumns = (
 			<div className="text-foreground font-semibold">
 				{row.original.volume
 					? `${formatNumber(row.original.volume)} Lot`
-					: ''}
+					: '0 Lot'}
 			</div>
 		),
 	},
