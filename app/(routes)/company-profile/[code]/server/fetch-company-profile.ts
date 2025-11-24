@@ -1,15 +1,12 @@
 import { fetcher } from '@/lib/fetcher';
-import { CompanyProfileSchema } from '../companny-profile-schema';
+import {
+	companyProfileData,
+	CompanyProfileSchema,
+} from '../company-profile-schema';
 
-export const fetchCompanyProfile = async (
-	code: string | undefined
-) => {
-	// default code when not provided
-	if (!code) {
-		code = 'BBCA';
-	}
-
+export const fetchCompanyProfile = async (code: string) => {
 	return fetcher<CompanyProfileSchema>(
-		`/idx-company-profile/${code}`
+		`/idx-company-profile/profile/${code}`,
+		{ schema: companyProfileData }
 	);
 };

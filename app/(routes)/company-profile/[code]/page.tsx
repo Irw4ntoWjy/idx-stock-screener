@@ -1,15 +1,15 @@
 import CompanyProfilePage from './company-profile-page';
 import { fetchCompanyProfile } from './server/fetch-company-profile';
 
-interface CompanyProfileProps {
+interface CompanyProfilePageProps {
 	params: Promise<{ code: string }>;
 }
 
 export default async function CompanyProfile({
 	params,
-}: CompanyProfileProps) {
+}: CompanyProfilePageProps) {
 	const { code } = await params;
-	const profileData = await fetchCompanyProfile(code);
+	const profile = await fetchCompanyProfile(code);
 
-	return <CompanyProfilePage code={code} data={profileData} />;
+	return <CompanyProfilePage code={code} data={profile} />;
 }

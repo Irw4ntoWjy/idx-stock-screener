@@ -1,19 +1,31 @@
 'use server';
 
+import z4 from 'zod/v4';
+
 const BACKEND_URL = process.env.IDX_STOCK_SCREENER_BE;
 
 if (!BACKEND_URL) {
 	throw new Error('Backend variable is not set');
 }
 
-type FetchOptions = Omit<RequestInit, 'method'> & {
+type CacheMode =
+	| 'default'
+	| 'no-store'
+	| 'reload'
+	| 'force-cache'
+	| 'only-if-cached';
+
+type FetchOptions<T> = Omit<RequestInit, 'method'> & {
 	tags?: string[];
 	revalidate?: number | false;
+	cache?: CacheMode | 'no-cache';
+	responseType?: 'JSON' | 'TEXT';
+	schema?: z4.ZodType<T>;
 };
 
 export const fetcher = async <T>(
 	endpoint: string,
-	options: FetchOptions = {}
+	options: FetchOptions<T> = {}
 ) => {
 	const {
 		tags = [],
@@ -35,7 +47,7 @@ export const fetcher = async <T>(
 			'Content-Type': 'application/json',
 			...fetchOptions.headers,
 		},
-		cache: 'force-cache',
+		cache: 'no-cache',
 		next: {
 			tags: ['idx-stocks', ...tags],
 			revalidate,
@@ -51,5 +63,15 @@ export const fetcher = async <T>(
 		);
 	}
 
-	return response.json() as Promise<T>;
+	let data: any;
+	if (options.responseType === 'TEXT') {
+		data = await response.text();
+	} else {
+		data = await response.json();
+	}
+
+	if (options.schema) {
+		return options.schema.parse(data);
+	}
+	return data as T;
 };

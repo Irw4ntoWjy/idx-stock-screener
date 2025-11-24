@@ -1,6 +1,14 @@
 'use client';
 
 import { Input } from '@/components/ui/input';
+import { Separator } from '@/components/ui/separator';
+import {
+	Tabs,
+	TabsContent,
+	TabsList,
+	TabsTrigger,
+} from '@/components/ui/tabs';
+import * as ScrollArea from '@radix-ui/react-scroll-area';
 import {
 	Globe,
 	Mail,
@@ -8,18 +16,10 @@ import {
 	Phone,
 	Search,
 } from 'lucide-react';
-import { useState } from 'react';
-import * as ScrollArea from '@radix-ui/react-scroll-area';
-import {
-	Tabs,
-	TabsContent,
-	TabsList,
-	TabsTrigger,
-} from '@/components/ui/tabs';
-import { InfoRow } from './info-row';
-import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
-import { CompanyProfileSchema } from './companny-profile-schema';
+import { useState } from 'react';
+import { CompanyProfileSchema } from './company-profile-schema';
+import { InfoRow } from './info-row';
 
 interface CompanyProfilePageProps {
 	code: string;
@@ -31,6 +31,7 @@ export default function CompanyProfilePage({
 	data,
 }: CompanyProfilePageProps) {
 	const [searchQuery, setSearchQuery] = useState('');
+	console.log(data);
 
 	return (
 		<div className="bg-card w-full h-full border border-t-0 rounded-b-lg px-4 py-4">
@@ -50,7 +51,7 @@ export default function CompanyProfilePage({
 					<div className="relative flex-1 max-w-md">
 						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
 						<Input
-							placeholder="Search company..."
+							placeholder="Search other company..."
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
 							className="pl-10 border-border"
@@ -67,7 +68,7 @@ export default function CompanyProfilePage({
 					<div className="flex items-start gap-4">
 						<div className="size-16 rounded-lg flex items-center justify-center">
 							<Image
-								src={`https://www.idx.co.id/Portals/0/StaticData/ListedCompanies/LogoEmiten/PHJB.jpg`}
+								src={`https://www.idx.co.id/Portals/0/StaticData/ListedCompanies/LogoEmiten/${code}.jpg`}
 								alt={`BBCA logo`}
 								width={64}
 								height={64}
