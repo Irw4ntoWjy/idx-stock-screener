@@ -1,10 +1,28 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import * as XLSX from 'xlsx';
+import { DateFormatter } from '@internationalized/date';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
+
+export const dateFormat = (
+	date: Date,
+	dateStyle?: 'full' | 'long' | 'medium' | 'short'
+): string => {
+	return new DateFormatter('en-GB', {
+		dateStyle: dateStyle ?? 'long',
+	}).format(date);
+};
+
+export const dateFormatString = (
+	dateStr: string | undefined | null,
+	dateStyle?: 'full' | 'long' | 'medium' | 'short'
+): string => {
+	if (!dateStr) return '';
+	return dateFormat(new Date(`${dateStr}Z`), dateStyle);
+};
 
 export const formatNumber = (
 	num: number | undefined

@@ -1,4 +1,4 @@
-import CompanyProfilePage from './company-profile-page';
+import CompanyProfilePage from './component/company-profile-page';
 import { fetchCompanyProfile } from './server/fetch-company-profile';
 
 interface CompanyProfilePageProps {
@@ -11,5 +11,5 @@ export default async function CompanyProfile({
 	const { code } = await params;
 	const profile = await fetchCompanyProfile(code);
 
-	return <CompanyProfilePage code={code} data={profile} />;
+	return <CompanyProfilePage data={profile} />;
 }
