@@ -13,6 +13,7 @@ import Image from 'next/image';
 import { useState } from 'react';
 import { CompanyProfileSchema } from '../company-profile-schema';
 import { CompanyProfileTabs } from './company-profile-tabs';
+import { FinancialStatementTabs } from './financial-statement-tabs';
 
 interface CompanyProfilePageProps {
 	data: CompanyProfileSchema;
@@ -44,7 +45,7 @@ export default function CompanyProfilePage({
 							placeholder="Search other company..."
 							value={searchQuery}
 							onChange={(e) => setSearchQuery(e.target.value)}
-							className="pl-10 border-border"
+							className="pl-10 border-border text-white"
 						/>
 					</div>
 				</div>
@@ -56,7 +57,7 @@ export default function CompanyProfilePage({
 			>
 				<ScrollArea.Viewport className="w-full h-full">
 					<div className="flex items-start gap-4">
-						<div className="size-32 shrink-0 rounded-lg bg-card flex items-center justify-center">
+						<div className="size-32 shrink-0 rounded-lg bg-white flex items-center justify-center">
 							<Image
 								src={`https://www.idx.co.id/${data.companyProfile.logo}`}
 								alt={`${data.companyProfile.issuerName} Logo`}
@@ -87,13 +88,13 @@ export default function CompanyProfilePage({
 							<TabsList className="w-full justify-start border-b rounded-none bg-transparent h-auto p-0 gap-6">
 								<TabsTrigger
 									value="company-profile"
-									className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-0 pb-3"
+									className="rounded-none cursor-pointer border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-0 pb-3"
 								>
 									Company Profile
 								</TabsTrigger>
 								<TabsTrigger
 									value="financial-statement"
-									className="rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-0 pb-3"
+									className="rounded-none  cursor-pointer border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-transparent data-[state=active]:shadow-none px-0 pb-3"
 								>
 									Financial Statements
 								</TabsTrigger>
@@ -109,7 +110,9 @@ export default function CompanyProfilePage({
 							<TabsContent
 								value="financial-statement"
 								className="mt-6"
-							></TabsContent>
+							>
+								<FinancialStatementTabs />
+							</TabsContent>
 						</Tabs>
 					</div>
 				</ScrollArea.Viewport>
