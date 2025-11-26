@@ -22,7 +22,7 @@ export default function Navbar() {
 			label: 'Fundamental',
 		},
 		{
-			path: '/company-profile',
+			path: '/company-profile/BBCA',
 			icon: Building,
 			label: 'Company Profile',
 		},

@@ -1,6 +1,6 @@
 interface InfoRowProps {
 	label: string;
-	value: string;
+	value: string | undefined;
 	icon?: React.ReactNode;
 	isLink?: boolean;
 }
@@ -18,7 +18,7 @@ export const InfoRow = ({
 				{icon && (
 					<span className="text-muted-foreground">{icon}</span>
 				)}
-				{isLink ? (
+				{isLink && value ? (
 					<a
 						href={`https://${value}`}
 						target="_blank"

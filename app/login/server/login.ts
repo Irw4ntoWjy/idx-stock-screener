@@ -1,5 +1,6 @@
 'use server';
 
+import { fetcher } from '@/lib/fetcher';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 
@@ -7,30 +8,21 @@ export const fetchLoginInfo = async (
 	username: string,
 	password: string
 ) => {
-	const backendUrl = process.env.IDX_STOCK_SCREENER_BE;
-	if (!backendUrl) throw new Error('Backend URL not configured');
+	const params = new URLSearchParams();
+	params.append('username', username.toString());
+	params.append('password', password.toString());
 
-	const url = new URL(`${backendUrl}/account/login`);
-	url.searchParams.append('username', username.toString());
-	url.searchParams.append('password', password.toString());
+	const token = await fetcher<string>(
+		'/account/login?' + params,
+		{
+			responseType: 'TEXT',
+		}
+	);
 
-	const res = await fetch(url, {
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		cache: 'no-store',
-	});
-	if (!res.ok) {
-		const errorText = await res.text();
-		throw new Error(
-			`Login failed: ${res.status} - ${errorText}`
-		);
-	}
-
-	const token = (await res.text()).trim();
+	const cleanToken = token.trim();
 
 	const cookieStore = await cookies();
-	cookieStore.set('token', token, {
+	cookieStore.set('token', cleanToken, {
 		httpOnly: true,
 		secure: process.env.NODE_ENV === 'production',
 		sameSite: 'strict',
