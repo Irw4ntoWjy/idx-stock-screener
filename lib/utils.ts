@@ -7,6 +7,10 @@ export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
 }
 
+export function timeout(ms: number) {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 export const dateFormat = (
 	date: Date,
 	dateStyle?: 'full' | 'long' | 'medium' | 'short'

@@ -10,19 +10,46 @@ import {
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { Search } from 'lucide-react';
 import Image from 'next/image';
-import { useState } from 'react';
-import { CompanyProfileSchema } from '../company-profile-schema';
+import { useState, useTransition } from 'react';
+import {
+	CompanyProfileSchema,
+	FinancialStatementsSchema,
+} from '../company-profile-schema';
 import { CompanyProfileTabs } from './company-profile-tabs';
 import { FinancialStatementTabs } from './financial-statement-tabs';
+import { fetchFinancialStatements } from '../server/fetch-financial-statements';
+import { timeout } from '@/lib/utils';
 
 interface CompanyProfilePageProps {
+	code: string;
 	data: CompanyProfileSchema;
 }
 
 export default function CompanyProfilePage({
+	code,
 	data,
 }: CompanyProfilePageProps) {
 	const [searchQuery, setSearchQuery] = useState('');
+
+	const [financialData, setFinancialData] = useState<
+		FinancialStatementsSchema[]
+	>([]);
+	const [isPending, startTransition] = useTransition();
+
+	function handleOnTabChange(
+		value: 'company-profile' | 'financial-statement'
+	) {
+		if (value === 'financial-statement') {
+			startTransition(async () => {
+				const response = await fetchFinancialStatements(code);
+				await timeout(1000);
+
+				setFinancialData(response);
+			});
+		} else {
+			setFinancialData([]);
+		}
+	}
 
 	return (
 		<div className="bg-card w-full h-full border border-t-0 rounded-b-lg px-4 py-4">
@@ -82,6 +109,13 @@ export default function CompanyProfilePage({
 
 					<div>
 						<Tabs
+							onValueChange={(value) =>
+								handleOnTabChange(
+									value as
+										| 'company-profile'
+										| 'financial-statement'
+								)
+							}
 							defaultValue="company-profile"
 							className="w-full mt-4"
 						>
@@ -111,7 +145,22 @@ export default function CompanyProfilePage({
 								value="financial-statement"
 								className="mt-6"
 							>
-								<FinancialStatementTabs />
+								{isPending ? (
+									<div className="space-y-4">
+										<div className="h-6 w-48 bg-muted animate-pulse rounded-md"></div>
+
+										<div className="grid grid-cols-3 gap-6">
+											{Array.from({ length: 6 }).map((_, i) => (
+												<div
+													key={i}
+													className="h-40 w-full bg-muted animate-pulse rounded-xl"
+												></div>
+											))}
+										</div>
+									</div>
+								) : (
+									<FinancialStatementTabs data={financialData} />
+								)}
 							</TabsContent>
 						</Tabs>
 					</div>

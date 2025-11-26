@@ -11,5 +11,5 @@ export default async function CompanyProfile({
 	const { code } = await params;
 	const profile = await fetchCompanyProfile(code);
 
-	return <CompanyProfilePage data={profile} />;
+	return <CompanyProfilePage code={code} data={profile} />;
 }

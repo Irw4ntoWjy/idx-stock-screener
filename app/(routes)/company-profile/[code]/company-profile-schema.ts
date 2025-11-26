@@ -95,3 +95,15 @@ export const companyProfileData = z4.object({
 export type CompanyProfileSchema = z4.infer<
 	typeof companyProfileData
 >;
+
+export const financialStatements = z4.object({
+	stockCode: z4.string(),
+	reportYear: z4.number(),
+	period: z4.string(),
+	fileName: z4.string(),
+	filePath: z4.string(),
+});
+
+export type FinancialStatementsSchema = z4.infer<
+	typeof financialStatements
+>;
