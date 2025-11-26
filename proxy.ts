@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export function proxy(req: NextRequest) {
 	const token = req.cookies.get('token')?.value;
 	const isLoginPage = req.nextUrl.pathname.startsWith('/login');
+	const isRoot = req.nextUrl.pathname === '/';
 
 	// redirect when user not login
 	if (!token && !isLoginPage) {
@@ -11,6 +12,12 @@ export function proxy(req: NextRequest) {
 	}
 
 	if (token && isLoginPage) {
+		const homeUrl = new URL('/technical', req.url);
+		return NextResponse.redirect(homeUrl);
+	}
+
+	// redirect when user access root
+	if (token && isRoot) {
 		const homeUrl = new URL('/technical', req.url);
 		return NextResponse.redirect(homeUrl);
 	}
