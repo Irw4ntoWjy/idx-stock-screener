@@ -17,8 +17,8 @@ import { useState, useTransition } from 'react';
 import { toast } from 'sonner';
 
 import {
+	getTechnicalData,
 	getTechnicalExportToExcel,
-	updateTechnicalData,
 } from './server/fetch-technical-data';
 import { getTechnicalColumns } from './table-config';
 import {
@@ -27,14 +27,19 @@ import {
 } from './technical-page-schema';
 
 interface TechnicalPageProps {
-	data: Pagination<typeof technicalPage>;
+	initialData: Pagination<typeof technicalPage>;
 }
 
 export default function TechnicalPage({
-	data,
+	initialData,
 }: TechnicalPageProps) {
+	const [data, setData] = useState(initialData);
 	const [filter, setFilter] = useState('');
 	const [isPending, startTransition] = useTransition();
+
+	// extract current page and size
+	const currentPage = data.page.page;
+	const currentSize = data.page.size;
 
 	// logic for refetching data
 	const refetchTechnicaldata = (updates: {
@@ -42,8 +47,13 @@ export default function TechnicalPage({
 		size?: number;
 		filter?: string;
 	}) => {
-		startTransition(() => {
-			updateTechnicalData(updates);
+		startTransition(async () => {
+			const newData = await getTechnicalData({
+				page: updates.page ?? currentPage,
+				size: updates.size ?? currentSize,
+				filter: filter,
+			});
+			setData(newData);
 		});
 	};
 
