@@ -17,15 +17,6 @@ export function ChartPageClient({
 }: ChartPageClientProps) {
 	const router = useRouter();
 
-	// formatting moving averages
-	const formatMovingAverages = (
-		source: ChartPageSchema['source']
-	): string => {
-		return Object.entries(source)
-			.map(([period, value]) => `MA${period}: ${value}`)
-			.join(', ');
-	};
-
 	return (
 		<div className="bg-card w-full h-full border border-t-0 rounded-b-lg px-4 py-4 gap-3 flex flex-col">
 			<div className="flex justify-between items-center">
@@ -49,7 +40,7 @@ export function ChartPageClient({
 						variant="outline"
 						onClick={() => {
 							window.open(
-								`https://www.tradingview.com/chart/?symbol=${code}`,
+								`https://www.tradingview.com/chart/?symbol=IDX:${code}`,
 								'_blank'
 							);
 						}}
