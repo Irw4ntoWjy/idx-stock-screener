@@ -20,20 +20,25 @@ import {
 	FundamentalPageSchema,
 } from './fundamental-page-schema';
 import {
+	getFundamentalData,
 	getFundamentalExportToExcel,
-	updateFundamentalData,
 } from './server/fetch-fundamental-data';
 import { getFundamentalColumns } from './table-config';
 
 interface FundamentalPageProps {
-	data: Pagination<typeof fundamentalPage>;
+	initialData: Pagination<typeof fundamentalPage>;
 }
 
 export default function FundamentalPage({
-	data,
+	initialData,
 }: FundamentalPageProps) {
+	const [data, setData] = useState(initialData);
 	const [filter, setFilter] = useState('');
 	const [isPending, startTransition] = useTransition();
+
+	// extract current page and size
+	const currentPage = data.page.page;
+	const currentSize = data.page.size;
 
 	// logic for refetching data
 	const refetchFundamentalData = (updates: {
@@ -41,8 +46,13 @@ export default function FundamentalPage({
 		size?: number;
 		filter?: string;
 	}) => {
-		startTransition(() => {
-			updateFundamentalData(updates);
+		startTransition(async () => {
+			const newData = await getFundamentalData({
+				page: updates.page ?? currentPage,
+				size: updates.size ?? currentSize,
+				filter: filter,
+			});
+			setData(newData);
 		});
 	};
 
