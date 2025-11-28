@@ -1,9 +1,11 @@
 'use client';
 
+import { logout } from '@/app/api/logout';
 import {
 	BarChart3,
 	Building,
 	FileText,
+	LogOut,
 	Search,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -56,7 +58,7 @@ export default function Navbar() {
 												: 'text-muted-foreground hover:text-primary-foreground hover:bg-primary/80'
 										}`}
 									>
-										<item.icon className="h-4 w-4" />
+										<item.icon className="size-4" />
 										{item.label}
 									</Link>
 								);
@@ -64,9 +66,18 @@ export default function Navbar() {
 						</nav>
 					</div>
 
-					<div className="flex items-center gap-4">
-						<MarketStatusIndicator />
-						<ThemeSwitch />
+					<div className="flex gap-6">
+						<div className="flex items-center gap-4">
+							<MarketStatusIndicator />
+							<ThemeSwitch />
+						</div>
+
+						<div className="items-center flex gap-2 cursor-pointer">
+							<LogOut
+								className="size-3.5 text-slate-400"
+								onClick={logout}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>
