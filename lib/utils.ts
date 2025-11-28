@@ -1,7 +1,8 @@
+import { DateFormatter } from '@internationalized/date';
 import { clsx, type ClassValue } from 'clsx';
+import { toast } from 'sonner';
 import { twMerge } from 'tailwind-merge';
 import * as XLSX from 'xlsx';
-import { DateFormatter } from '@internationalized/date';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(inputs));
@@ -46,20 +47,48 @@ export const debounce = (
 	}, timeout);
 };
 
-export const exportToExcel = (
-	exportRow: Record<string, string>[],
-	colWidth: Record<'wch', number>[],
-	excelName: string
+export type ExportConfig<T> = {
+	sheetName: string;
+	fileName: string;
+	columns: {
+		header: string;
+		width: number;
+		value: (row: T) => string;
+	}[];
+};
+
+export const exportToExcel = <T>(
+	data: T[],
+	config: ExportConfig<T>
 ) => {
-	// create sheet
-	const newTab = XLSX.utils.book_new();
-	const newSheet = XLSX.utils.json_to_sheet(exportRow);
+	if (data.length === 0) {
+		toast.warning('No data to be Exported');
+		return;
+	}
 
-	newSheet['!cols'] = colWidth;
+	const exportData = data.map((row) =>
+		Object.fromEntries(
+			config.columns.map((col) => [col.header, col.value(row)])
+		)
+	);
 
-	XLSX.utils.book_append_sheet(newTab, newSheet, excelName);
+	const colWidths = config.columns.map((col) => ({
+		wch: col.width,
+	}));
+
+	const workbook = XLSX.utils.book_new();
+	const worksheet = XLSX.utils.json_to_sheet(exportData);
+	worksheet['!cols'] = colWidths;
+
+	XLSX.utils.book_append_sheet(
+		workbook,
+		worksheet,
+		config.sheetName
+	);
 	XLSX.writeFile(
-		newTab,
-		`${excelName}-${new Date().toISOString().split('T')[0]}.xlsx`
+		workbook,
+		`${config.fileName}-${
+			new Date().toISOString().split('T')[0]
+		}.xlsx`
 	);
 };

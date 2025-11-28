@@ -8,13 +8,13 @@ import { Input } from '@/components/ui/input';
 import { Pagination } from '@/lib/global-type';
 import {
 	debounce,
+	ExportConfig,
 	exportToExcel,
 	formatNumber,
 } from '@/lib/utils';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { FileDown, Search } from 'lucide-react';
 import { useState, useTransition } from 'react';
-import { toast } from 'sonner';
 
 import {
 	getTechnicalData,
@@ -34,7 +34,6 @@ export default function TechnicalPage({
 	initialData,
 }: TechnicalPageProps) {
 	const [data, setData] = useState(initialData);
-	const [filter, setFilter] = useState('');
 	const [isPending, startTransition] = useTransition();
 
 	// extract current page and size
@@ -51,7 +50,7 @@ export default function TechnicalPage({
 			const newData = await getTechnicalData({
 				page: updates.page ?? currentPage,
 				size: updates.size ?? currentSize,
-				filter: filter,
+				filter: updates.filter,
 			});
 			setData(newData);
 		});
@@ -67,45 +66,50 @@ export default function TechnicalPage({
 	const columns = getTechnicalColumns(maKeys);
 
 	const handleExport = async () => {
-		const excelData =
-			(await getTechnicalExportToExcel()) as TechnicalPageSchema[];
-
-		if (excelData.length === 0) {
-			toast.warning('No data to be Exported');
-			return;
-		}
-
-		const exportData = excelData.map((row) => {
-			// mapped row data
-			const exportRow: Record<string, string> = {};
-			exportRow['Code'] = row.stockCode;
-			exportRow['Name'] = row.name;
-			exportRow['Prev Close'] = formatNumber(row.prevClose);
-			exportRow['Open'] = formatNumber(row.openPrice);
-			exportRow['Close'] = formatNumber(row.closePrice);
-			exportRow['Volume (Lot)'] = row.volume
-				? `${formatNumber(row.volume)} Lot`
-				: '';
-			maKeys.forEach((key) => {
-				exportRow[`MA ${key}`] = formatNumber(
-					row.movingAverage[key] || 0
-				);
-			});
-
-			return exportRow;
+		const technicalConfig = (
+			maKeys: number[]
+		): ExportConfig<TechnicalPageSchema> => ({
+			sheetName: 'Technical Analysis',
+			fileName: 'Technical Analysis',
+			columns: [
+				{ header: 'Code', width: 8, value: (r) => r.stockCode },
+				{ header: 'Name', width: 36, value: (r) => r.name },
+				{
+					header: 'Prev Close',
+					width: 12,
+					value: (r) => formatNumber(r.prevClose),
+				},
+				{
+					header: 'Open',
+					width: 10,
+					value: (r) => formatNumber(r.openPrice),
+				},
+				{
+					header: 'Close',
+					width: 10,
+					value: (r) => formatNumber(r.closePrice),
+				},
+				{
+					header: 'Volume (Lot)',
+					width: 15,
+					value: (r) =>
+						r.volume ? `${formatNumber(r.volume)} Lot` : '',
+				},
+				...maKeys.map((key) => ({
+					header: `MA ${key}`,
+					width: 12,
+					value: (r: TechnicalPageSchema) =>
+						formatNumber(r.movingAverage[key] || 0),
+				})),
+			],
 		});
 
-		const colWidths = [
-			{ wch: 8 },
-			{ wch: 36 },
-			{ wch: 12 },
-			{ wch: 10 },
-			{ wch: 10 },
-			{ wch: 15 },
-			...maKeys.map(() => ({ wch: 12 })),
-		];
-
-		exportToExcel(exportData, colWidths, 'Technical Analysis');
+		const data =
+			(await getTechnicalExportToExcel()) as TechnicalPageSchema[];
+		exportToExcel(
+			data,
+			technicalConfig(maKeys.map((k) => parseInt(k)))
+		);
 	};
 
 	return (
@@ -126,14 +130,11 @@ export default function TechnicalPage({
 						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
 						<Input
 							placeholder="Search stocks..."
-							value={filter}
 							onChange={(e) => {
 								const value = e.target.value;
-								setFilter(value);
-
-								debounce(() =>
-									refetchTechnicaldata({ filter: value })
-								);
+								debounce(() => {
+									refetchTechnicaldata({ filter: value });
+								});
 							}}
 							className="pl-10 border-border"
 						/>

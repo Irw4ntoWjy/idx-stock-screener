@@ -8,13 +8,13 @@ import { Input } from '@/components/ui/input';
 import { Pagination } from '@/lib/global-type';
 import {
 	debounce,
+	ExportConfig,
 	exportToExcel,
 	formatNumber,
 } from '@/lib/utils';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { FileDown, Search } from 'lucide-react';
 import { useState, useTransition } from 'react';
-import { toast } from 'sonner';
 import {
 	fundamentalPage,
 	FundamentalPageSchema,
@@ -33,7 +33,6 @@ export default function FundamentalPage({
 	initialData,
 }: FundamentalPageProps) {
 	const [data, setData] = useState(initialData);
-	const [filter, setFilter] = useState('');
 	const [isPending, startTransition] = useTransition();
 
 	// extract current page and size
@@ -50,7 +49,7 @@ export default function FundamentalPage({
 			const newData = await getFundamentalData({
 				page: updates.page ?? currentPage,
 				size: updates.size ?? currentSize,
-				filter: filter,
+				filter: updates.filter,
 			});
 			setData(newData);
 		});
@@ -59,75 +58,90 @@ export default function FundamentalPage({
 	const columns = getFundamentalColumns();
 
 	const handleExport = async () => {
-		const excelData =
+		const fundamentalConfig: ExportConfig<FundamentalPageSchema> =
+			{
+				sheetName: 'Fundamental',
+				fileName: 'Fundamental',
+				columns: [
+					{
+						header: 'Sector',
+						width: 18,
+						value: (r) => r.sector || '',
+					},
+					{
+						header: 'Code',
+						width: 10,
+						value: (r) => r.stockCode,
+					},
+					{ header: 'Name', width: 38, value: (r) => r.name },
+					{
+						header: 'Market Cap',
+						width: 22,
+						value: (r) =>
+							r.marketCap ? formatNumber(r.marketCap) : '0',
+					},
+					{
+						header: 'Volume (Lot)',
+						width: 18,
+						value: (r) =>
+							r.volume ? formatNumber(r.volume) : '0',
+					},
+					{
+						header: 'Close',
+						width: 14,
+						value: (r) =>
+							r.closePrice ? formatNumber(r.closePrice) : '0',
+					},
+					{
+						header: 'BV',
+						width: 16,
+						value: (r) => (r.bv ? formatNumber(r.bv) : '0'),
+					},
+					{
+						header: 'PBV',
+						width: 12,
+						value: (r) => (r.pbv ? formatNumber(r.pbv) : '0'),
+					},
+					{
+						header: 'PER',
+						width: 12,
+						value: (r) => (r.per ? formatNumber(r.per) : '0'),
+					},
+					{
+						header: 'EPS',
+						width: 16,
+						value: (r) => (r.eps ? formatNumber(r.eps) : '0'),
+					},
+					{
+						header: 'DER',
+						width: 12,
+						value: (r) => (r.der ? formatNumber(r.der) : '0'),
+					},
+					{
+						header: 'ROA (%)',
+						width: 14,
+						value: (r) =>
+							r.roaPercent ? formatNumber(r.roaPercent) : '0',
+					},
+					{
+						header: 'ROE (%)',
+						width: 14,
+						value: (r) =>
+							r.roePercent ? formatNumber(r.roePercent) : '0',
+					},
+					{
+						header: 'NPM (%)',
+						width: 14,
+						value: (r) =>
+							r.npmPercent ? formatNumber(r.npmPercent) : '0',
+					},
+				],
+			};
+
+		const data =
 			(await getFundamentalExportToExcel()) as FundamentalPageSchema[];
 
-		if (excelData.length === 0) {
-			toast.warning('No data to be Exported');
-			return;
-		}
-
-		const exportData = excelData.map((row) => {
-			// mapped row data
-			const exportRow: Record<string, string> = {};
-			exportRow['Sector'] = row.sector;
-			exportRow['Code'] = row.stockCode;
-			exportRow['Name'] = row.name;
-			exportRow['Market Cap'] = row.marketCap
-				? formatNumber(row.marketCap).toString()
-				: '0';
-			exportRow['Volume (Lot)'] = row.volume
-				? formatNumber(row.volume).toString()
-				: '0';
-			exportRow['Close'] = row.closePrice
-				? formatNumber(row.closePrice).toString()
-				: '0';
-			exportRow['BV'] = row.bv
-				? formatNumber(row.bv).toString()
-				: '0';
-			exportRow['PBV'] = row.pbv
-				? formatNumber(row.pbv).toString()
-				: '0';
-			exportRow['PER'] = row.per
-				? formatNumber(row.per).toString()
-				: '0';
-			exportRow['EPS'] = row.eps
-				? formatNumber(row.eps).toString()
-				: '0';
-			exportRow['DER'] = row.der
-				? formatNumber(row.der).toString()
-				: '0';
-			exportRow['ROA (%)'] = row.roaPercent
-				? formatNumber(row.roaPercent).toString()
-				: '0';
-			exportRow['ROE (%)'] = row.roePercent
-				? formatNumber(row.roePercent).toString()
-				: '0';
-			exportRow['NPM (%)'] = row.npmPercent
-				? formatNumber(row.npmPercent).toString()
-				: '0';
-
-			return exportRow;
-		});
-
-		const colWidths = [
-			{ wch: 18 },
-			{ wch: 10 },
-			{ wch: 38 },
-			{ wch: 22 },
-			{ wch: 18 },
-			{ wch: 14 },
-			{ wch: 16 },
-			{ wch: 12 },
-			{ wch: 12 },
-			{ wch: 16 },
-			{ wch: 12 },
-			{ wch: 14 },
-			{ wch: 14 },
-			{ wch: 14 },
-		];
-
-		exportToExcel(exportData, colWidths, 'Fundamental');
+		exportToExcel(data, fundamentalConfig);
 	};
 
 	return (
@@ -149,10 +163,8 @@ export default function FundamentalPage({
 						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
 						<Input
 							placeholder="Search stocks..."
-							value={filter}
 							onChange={(e) => {
 								const value = e.target.value;
-								setFilter(value);
 
 								debounce(() =>
 									refetchFundamentalData({ filter: value })
