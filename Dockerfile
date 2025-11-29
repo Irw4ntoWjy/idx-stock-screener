@@ -6,13 +6,10 @@ RUN npm install -g pnpm
 
 COPY package.json pnpm-lock.yaml ./
 
-COPY stock-screener/package.json ./stock-screener/
-
 RUN pnpm install --frozen-lockfile
 
-COPY stock-screener/ ./stock-screener/
+COPY . .
 
-WORKDIR /app/stock-screener
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN pnpm run build
 
@@ -23,16 +20,12 @@ WORKDIR /app
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder --chown=nextjs:nodejs /app/stock-screener/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/stock-screener/.next/static ./.next/static
-COPY --from=builder --chown=nextjs:nodejs /app/stock-screener/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
+COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 USER nextjs
 
 EXPOSE 3000
-
-ENV NODE_ENV=production
-ENV PORT=3000
-ENV NEXT_TELEMETRY_DISABLED=1
 
 CMD ["node", "server.js"]
