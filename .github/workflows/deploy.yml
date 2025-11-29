@@ -65,7 +65,7 @@ jobs:
             echo "Pulling $IMAGE:$TAG"
             docker pull "$IMAGE:$TAG"
 
-            cd /home/${{ secrets.VPS_USER }}/stocks-screener
+            cd /home/${{ secrets.VPS_USER }}/stock-screener
             export TAG="$TAG"
 
             docker compose pull frontend
