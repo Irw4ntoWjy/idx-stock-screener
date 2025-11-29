@@ -1,0 +1,28 @@
+name: Deploy Frontend
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            IMAGE="ghcr.io/${{ github.repository_owner }}/stock-screener"
+            TAG="${GITHUB_REF#refs/tags/}"
+
+            echo "${{ secrets.GHCR_PAT }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+            docker pull $IMAGE:$TAG
+
+            cd /home/${{ secrets.VPS_USER }}/stocks-screener
+
+            export TAG=$TAG
+            docker compose up frontend -d --force-recreate
