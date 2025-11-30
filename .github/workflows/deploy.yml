@@ -63,7 +63,7 @@ jobs:
 
             OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
             REPO=$(basename "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-            TAG="${{ needs.build-and-push.outputs.tag }}"
+            TAG="${{ github.ref_name }}" 
 
             IMAGE="ghcr.io/$OWNER/$REPO"
 
