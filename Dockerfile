@@ -36,4 +36,5 @@ COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 USER nextjs
 EXPOSE 3000
 
-CMD ["node", "next", "start"]
+CMD ["pnpm", "start"]
+
