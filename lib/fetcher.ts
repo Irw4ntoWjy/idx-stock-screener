@@ -8,6 +8,10 @@ if (!BACKEND_URL) {
 	throw new Error('Backend variable is not set');
 }
 
+if (!BACKEND_URL && process.env.NODE_ENV === 'production') {
+	throw new Error('env is required in production');
+}
+
 type CacheMode =
 	| 'default'
 	| 'no-store'
