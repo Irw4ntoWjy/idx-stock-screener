@@ -17,6 +17,13 @@ RUN pnpm run build
 FROM node:20-alpine AS runner
 WORKDIR /app
 
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV NEXT_TELEMETRY_DISABLED=1
+
+ARG IDX_STOCK_SCREENER_BE
+ENV IDX_STOCK_SCREENER_BE=${IDX_STOCK_SCREENER_BE}
+
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
