@@ -11,6 +11,10 @@ RUN pnpm install --frozen-lockfile
 COPY . .
 
 ENV NEXT_TELEMETRY_DISABLED=1
+
+ARG IDX_STOCK_SCREENER_BE
+ENV IDX_STOCK_SCREENER_BE=${IDX_STOCK_SCREENER_BE}
+
 RUN pnpm run build
 
 # === RUNNER ===
