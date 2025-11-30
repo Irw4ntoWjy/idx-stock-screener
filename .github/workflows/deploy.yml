@@ -1,4 +1,5 @@
 name: Build & Deploy Frontend
+run-name: Deploying ${{ github.ref_name }}
 
 on:
   push:
@@ -62,7 +63,7 @@ jobs:
 
             OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
             REPO=$(basename "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-            TAG="${{ needs.build-and-push.outputs.TAG || env.TAG }}"
+            TAG="${{ needs.build-and-push.outputs.tag }}"
 
             IMAGE="ghcr.io/$OWNER/$REPO"
 
