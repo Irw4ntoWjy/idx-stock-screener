@@ -29,15 +29,11 @@ ENV IDX_STOCK_SCREENER_BE=${IDX_STOCK_SCREENER_BE}
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy required files from builder
-COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 
 USER nextjs
-
 EXPOSE 3000
 
 CMD ["node", ".next/server/app.js"]
-
