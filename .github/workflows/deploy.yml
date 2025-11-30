@@ -13,6 +13,9 @@ permissions:
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.set-tag.outputs.tag }}
+      image: ${{ steps.set-tag.outputs.image }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
