@@ -12,6 +12,8 @@ if (!BACKEND_URL && process.env.NODE_ENV === 'production') {
 	throw new Error('env is required in production');
 }
 
+type HttpMethod = 'GET' | 'POST';
+
 type CacheMode =
 	| 'default'
 	| 'no-store'
@@ -20,6 +22,7 @@ type CacheMode =
 	| 'only-if-cached';
 
 type FetchOptions<T> = Omit<RequestInit, 'method'> & {
+	method?: HttpMethod;
 	tags?: string[];
 	revalidate?: number | false;
 	cache?: CacheMode | 'no-cache';
@@ -32,6 +35,7 @@ export const fetcher = async <T>(
 	options: FetchOptions<T> = {}
 ) => {
 	const {
+		method = 'GET',
 		tags = [],
 		revalidate = false,
 		...fetchOptions
@@ -46,6 +50,7 @@ export const fetcher = async <T>(
 	const url = new URL(path, base);
 
 	const response = await fetch(url, {
+		method,
 		...fetchOptions,
 		headers: {
 			'Content-Type': 'application/json',

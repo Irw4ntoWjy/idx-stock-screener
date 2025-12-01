@@ -1,6 +1,5 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import {
 	Card,
 	CardContent,
@@ -8,35 +7,26 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { Key, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { LoginForm } from './component/LoginForm';
+import { fetchForgotPassword } from './server/forgot-password';
 import { toast } from 'sonner';
-import { fetchLoginInfo } from './server/login';
+import { useState } from 'react';
+import { ForgotPasswordForm } from './component/ForgotPasswordForm';
 
 export default function Login() {
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
+	const [showOtpForm, setShowOtpForm] = useState(false);
 
-	const handleSubmit = async (
-		e: React.FormEvent<HTMLFormElement>
-	) => {
+	const handleForgotPassword = async (e: React.MouseEvent) => {
 		e.preventDefault();
 
-		if (!username || !password) {
-			toast.warning('Username/password cannot be empty');
-			return;
-		}
+		const result = await fetchForgotPassword(
+			'tuathanlui88@gmail.com'
+		);
+		toast[result.success ? 'success' : 'error'](result.message);
 
-		try {
-			await fetchLoginInfo(username, password);
-		} catch (error) {
-			const message =
-				error instanceof Error ? error.message : 'Login failed';
-			toast.error(message);
-		}
+		setShowOtpForm(true);
 	};
 
 	return (
@@ -54,57 +44,23 @@ export default function Login() {
 					</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-4 p-6">
-					<form className="space-y-4" onSubmit={handleSubmit}>
-						<div className="space-y-2">
-							<Label
-								htmlFor="email"
-								className="flex items-center gap-2 text-black"
-							>
-								Username
-							</Label>
-							<Input
-								id="username"
-								type="text"
-								placeholder="Username"
-								value={username}
-								onChange={(e) => setUsername(e.target.value)}
-								className="border-gray-400/70"
-								required
-							/>
-						</div>
-						<div className="space-y-2">
-							<Label
-								htmlFor="password"
-								className="flex items-center gap-2 text-black"
-							>
-								Password
-							</Label>
-							<Input
-								id="password"
-								type="password"
-								placeholder="••••••••"
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								className=" focus:border-blue-500 focus:ring-blue-500 border-gray-400/70"
-								required
-							/>
-						</div>
-						<Button
-							type="submit"
-							className="w-full hover:bg-blue-700 text-white border-0 mt-4"
-						>
-							Sign In
-						</Button>
-					</form>
-					<div className="text-center space-y-2 text-sm">
-						<Link
-							href="#"
-							className="text-blue-500 underline-offset-4 hover:underline font-medium flex items-center justify-center gap-1"
-						>
-							<Key className="h-3 w-3 inline" />
-							Forgot password?
-						</Link>
-					</div>
+					{showOtpForm ? (
+						<ForgotPasswordForm />
+					) : (
+						<>
+							<LoginForm />
+							<div className="text-center space-y-2 text-sm">
+								<Link
+									href="#"
+									className="text-blue-500 underline-offset-4 hover:underline font-medium flex items-center justify-center gap-1"
+									onClick={handleForgotPassword}
+								>
+									<Key className="h-3 w-3 inline" />
+									Forgot password?
+								</Link>
+							</div>
+						</>
+					)}
 				</CardContent>
 			</Card>
 		</div>
