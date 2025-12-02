@@ -50,7 +50,9 @@ export const getFundamentalColumns =
 			header: 'Volume (Lot)',
 			cell: ({ row }) => (
 				<div className="text-foreground font-semibold">
-					{`${formatNumber(row.original.volume)} Lot`}
+					{row.original.volume
+						? `${formatNumber(row.original.volume)} Lot`
+						: ''}
 				</div>
 			),
 		},
@@ -152,7 +154,7 @@ export const getFundamentalColumns =
 						size="sm"
 						onClick={() =>
 							router.push(
-								`/company-profile/${row.original.stockCode}`
+								`/company-profile/${row.original.stockCode}?from=fundamental`
 							)
 						}
 						className="bg-primary hover:bg-primary/90 text-primary-foreground"

@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Pagination } from '@/lib/global-type';
 import {
+	dateFormatString,
 	debounce,
 	ExportConfig,
 	exportToExcel,
@@ -176,6 +177,7 @@ export default function TechnicalPage({
 					onPageChange={(newPage) =>
 						refetchTechnicaldata({ page: newPage })
 					}
+					fetchTime={dateFormatString(data.content[0].date)}
 				/>
 			</div>
 

@@ -1,11 +1,9 @@
 'use client';
 
-import { logout } from '@/app/api/logout';
 import {
 	BarChart3,
 	Building,
 	FileText,
-	LogOut,
 	Search,
 } from 'lucide-react';
 import Link from 'next/link';
@@ -70,13 +68,6 @@ export default function Navbar() {
 						<div className="flex items-center gap-4">
 							<MarketStatusIndicator />
 							<ThemeSwitch />
-						</div>
-
-						<div className="items-center flex gap-2 cursor-pointer">
-							<LogOut
-								className="size-3.5 text-slate-400"
-								onClick={logout}
-							/>
 						</div>
 					</div>
 				</div>

@@ -14,6 +14,7 @@ interface PaginationProps {
 	totalItems: number;
 	itemsPerPage: number;
 	onPageChange: (page: number) => void;
+	fetchTime?: string;
 }
 
 export function DataTablePagination({
@@ -21,6 +22,7 @@ export function DataTablePagination({
 	totalItems,
 	itemsPerPage,
 	onPageChange,
+	fetchTime,
 }: PaginationProps) {
 	const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -54,8 +56,8 @@ export function DataTablePagination({
 				Stocks
 			</div>
 
-			<Pagination>
-				<PaginationContent>
+			<Pagination className="flex justify-center">
+				<PaginationContent className="flex items-center gap-1">
 					<PaginationItem>
 						<PaginationPrevious
 							onClick={() =>
@@ -63,8 +65,8 @@ export function DataTablePagination({
 							}
 							className={cn(
 								currentPage === 1
-									? 'pointer-events-none text-muted-foreground opacity-50'
-									: 'cursor-pointer text-foreground'
+									? 'pointer-events-none opacity-50 text-muted-foreground'
+									: 'cursor-pointer hover:bg-accent'
 							)}
 						/>
 					</PaginationItem>
@@ -74,7 +76,7 @@ export function DataTablePagination({
 							<PaginationLink
 								onClick={() => onPageChange(pageNum)}
 								isActive={currentPage === pageNum}
-								className="cursor-pointer text-foreground"
+								className="cursor-pointer"
 							>
 								{pageNum}
 							</PaginationLink>
@@ -83,7 +85,7 @@ export function DataTablePagination({
 
 					{totalPages > 5 && currentPage < totalPages - 2 && (
 						<PaginationItem>
-							<PaginationEllipsis className="text-foreground" />
+							<PaginationEllipsis />
 						</PaginationItem>
 					)}
 
@@ -96,13 +98,19 @@ export function DataTablePagination({
 							}
 							className={cn(
 								currentPage === totalPages
-									? 'pointer-events-none text-muted-foreground opacity-50'
-									: 'cursor-pointer text-foreground '
+									? 'pointer-events-none opacity-50 text-muted-foreground'
+									: 'cursor-pointer hover:bg-accent'
 							)}
 						/>
 					</PaginationItem>
 				</PaginationContent>
 			</Pagination>
+
+			{fetchTime && (
+				<div className="text-sm text-muted-foreground whitespace-nowrap">
+					Last fetched at: {fetchTime}
+				</div>
+			)}
 		</div>
 	);
 }

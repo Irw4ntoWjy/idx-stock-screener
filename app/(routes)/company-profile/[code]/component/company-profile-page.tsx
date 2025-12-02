@@ -7,18 +7,18 @@ import {
 	TabsList,
 	TabsTrigger,
 } from '@/components/ui/tabs';
+import { timeout } from '@/lib/utils';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
-import { Search } from 'lucide-react';
-import Image from 'next/image';
+import { ArrowLeft, Search } from 'lucide-react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import {
 	CompanyProfileSchema,
 	FinancialStatementsSchema,
 } from '../company-profile-schema';
+import { fetchFinancialStatements } from '../server/fetch-financial-statements';
 import { CompanyProfileTabs } from './company-profile-tabs';
 import { FinancialStatementTabs } from './financial-statement-tabs';
-import { fetchFinancialStatements } from '../server/fetch-financial-statements';
-import { timeout } from '@/lib/utils';
 
 interface CompanyProfilePageProps {
 	code: string;
@@ -29,6 +29,10 @@ export default function CompanyProfilePage({
 	code,
 	data,
 }: CompanyProfilePageProps) {
+	const searchParams = useSearchParams();
+	const openFrom = searchParams.get('from') || undefined;
+	const router = useRouter();
+
 	const [searchQuery, setSearchQuery] = useState('');
 
 	const [financialData, setFinancialData] = useState<
@@ -55,27 +59,45 @@ export default function CompanyProfilePage({
 		<div className="bg-card w-full h-full border border-t-0 rounded-b-lg px-4 py-4">
 			<div className="mb-2 flex items-center justify-between">
 				<div>
-					<h2 className="text-2xl font-semibold mb-2 flex items-center gap-2">
-						<div className="h-8 w-1 bg-primary rounded-full" />
-						Company Information
-					</h2>
-					<p className="text-muted-foreground">
+					<div className="flex items-center gap-3">
+						{openFrom === 'fundamental' ? (
+							<ArrowLeft
+								className="size-5 text-muted-foreground cursor-pointer"
+								onClick={() => router.back()}
+							/>
+						) : (
+							<></>
+						)}
+
+						<div className="flex items-center gap-3">
+							<div className="h-7 w-1 bg-primary rounded-full" />
+							<h2 className="text-2xl font-semibold leading-none">
+								Company Information
+							</h2>
+						</div>
+					</div>
+
+					<p className="text-muted-foreground mt-2">
 						Detailed company profile and corporate information
 						for IDX listed companies
 					</p>
 				</div>
 
-				<div className="flex gap-3">
-					<div className="relative flex-1 max-w-md">
-						<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
-						<Input
-							placeholder="Search other company..."
-							value={searchQuery}
-							onChange={(e) => setSearchQuery(e.target.value)}
-							className="pl-10 border-border text-white"
-						/>
+				{openFrom !== 'fundamental' ? (
+					<div className="flex gap-3">
+						<div className="relative flex-1 max-w-md">
+							<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
+							<Input
+								placeholder="Search other company..."
+								value={searchQuery}
+								onChange={(e) => setSearchQuery(e.target.value)}
+								className="pl-10 border-border text-white"
+							/>
+						</div>
 					</div>
-				</div>
+				) : (
+					<></>
+				)}
 			</div>
 
 			<ScrollArea.Root
@@ -85,13 +107,12 @@ export default function CompanyProfilePage({
 				<ScrollArea.Viewport className="w-full h-full">
 					<div className="flex items-start gap-4">
 						<div className="size-32 shrink-0 rounded-lg bg-white flex items-center justify-center">
-							<Image
+							<img
 								src={`https://www.idx.co.id/${data.companyProfile.logo}`}
 								alt={`${data.companyProfile.issuerName} Logo`}
 								width={108}
 								height={108}
 								className="object-contain max-w-full max-h-full"
-								unoptimized
 							/>
 						</div>
 
