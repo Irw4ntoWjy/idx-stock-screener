@@ -68,72 +68,74 @@ export default function FundamentalPage({
 						width: 18,
 						value: (r) => r.sector || '',
 					},
+					{ header: 'Name', width: 38, value: (r) => r.name },
 					{
 						header: 'Code',
 						width: 10,
 						value: (r) => r.stockCode,
 					},
-					{ header: 'Name', width: 38, value: (r) => r.name },
 					{
-						header: 'Market Cap',
+						header: 'Market Cap (Rp)',
 						width: 22,
-						value: (r) =>
-							r.marketCap ? formatNumber(r.marketCap) : '0',
+						value: (r) => r.marketCap ?? 0,
+						cellStyle: { numFmt: '#,##0' },
 					},
 					{
 						header: 'Volume (Lot)',
 						width: 18,
-						value: (r) =>
-							r.volume ? formatNumber(r.volume) : '0',
+						value: (r) => r.volume ?? 0,
+						cellStyle: { numFmt: '#,##0' },
 					},
 					{
 						header: 'Close',
 						width: 14,
-						value: (r) =>
-							r.closePrice ? formatNumber(r.closePrice) : '0',
+						value: (r) => r.closePrice ?? 0,
+						cellStyle: { numFmt: '#,##0' },
 					},
 					{
 						header: 'BV',
 						width: 16,
-						value: (r) => (r.bv ? formatNumber(r.bv) : '0'),
+						value: (r) => r.bv ?? 0,
+						cellStyle: { numFmt: '0.00' },
 					},
 					{
 						header: 'PBV',
 						width: 12,
-						value: (r) => (r.pbv ? formatNumber(r.pbv) : '0'),
+						value: (r) => r.pbv ?? 0,
+						cellStyle: { numFmt: '0.00' },
 					},
 					{
 						header: 'PER',
 						width: 12,
-						value: (r) => (r.per ? formatNumber(r.per) : '0'),
+						value: (r) => r.per ?? 0,
+						cellStyle: { numFmt: '0.00' },
 					},
 					{
 						header: 'EPS',
 						width: 16,
-						value: (r) => (r.eps ? formatNumber(r.eps) : '0'),
+						value: (r) => r.eps ?? 0,
+						cellStyle: { numFmt: '0.00' },
 					},
 					{
 						header: 'DER',
 						width: 12,
-						value: (r) => (r.der ? formatNumber(r.der) : '0'),
+						value: (r) => r.der ?? 0,
+						cellStyle: { numFmt: '0.00' },
 					},
 					{
 						header: 'ROA (%)',
 						width: 14,
-						value: (r) =>
-							r.roaPercent ? formatNumber(r.roaPercent) : '0',
+						value: (r) => r.roaPercent ?? 0,
 					},
 					{
 						header: 'ROE (%)',
 						width: 14,
-						value: (r) =>
-							r.roePercent ? formatNumber(r.roePercent) : '0',
+						value: (r) => r.roePercent ?? 0,
 					},
 					{
 						header: 'NPM (%)',
 						width: 14,
-						value: (r) =>
-							r.npmPercent ? formatNumber(r.npmPercent) : '0',
+						value: (r) => r.npmPercent ?? 0,
 					},
 				],
 			};

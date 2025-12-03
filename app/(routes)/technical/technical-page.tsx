@@ -76,11 +76,6 @@ export default function TechnicalPage({
 				{ header: 'Code', width: 8, value: (r) => r.stockCode },
 				{ header: 'Name', width: 36, value: (r) => r.name },
 				{
-					header: 'Prev Close',
-					width: 12,
-					value: (r) => formatNumber(r.prevClose),
-				},
-				{
 					header: 'Open',
 					width: 10,
 					value: (r) => formatNumber(r.openPrice),
@@ -94,7 +89,7 @@ export default function TechnicalPage({
 					header: 'Volume (Lot)',
 					width: 15,
 					value: (r) =>
-						r.volume ? `${formatNumber(r.volume)} Lot` : '',
+						r.volume ? formatNumber(r.volume) : '0',
 				},
 				...maKeys.map((key) => ({
 					header: `MA ${key}`,

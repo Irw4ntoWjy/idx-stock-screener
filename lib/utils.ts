@@ -53,7 +53,8 @@ export type ExportConfig<T> = {
 	columns: {
 		header: string;
 		width: number;
-		value: (row: T) => string;
+		value: (row: T) => string | number;
+		cellStyle?: { numFmt?: string };
 	}[];
 };
 
@@ -72,13 +73,34 @@ export const exportToExcel = <T>(
 		)
 	);
 
-	const colWidths = config.columns.map((col) => ({
+	const workbook = XLSX.utils.book_new();
+	const worksheet = XLSX.utils.json_to_sheet(exportData);
+
+	worksheet['!cols'] = config.columns.map((col) => ({
 		wch: col.width,
 	}));
 
-	const workbook = XLSX.utils.book_new();
-	const worksheet = XLSX.utils.json_to_sheet(exportData);
-	worksheet['!cols'] = colWidths;
+	const headerRow = XLSX.utils.sheet_add_aoa(
+		worksheet,
+		[config.columns.map((c) => c.header)],
+		{ origin: 'A1' }
+	);
+	const range = XLSX.utils.decode_range(worksheet['!ref']!);
+
+	for (let R = range.s.r + 1; R <= range.e.r; ++R) {
+		config.columns.forEach((col, C) => {
+			const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
+
+			if (worksheet[cellAddress]) {
+				if (col.cellStyle?.numFmt) {
+					worksheet[cellAddress].z = col.cellStyle.numFmt;
+				}
+				if (typeof worksheet[cellAddress].v === 'number') {
+					worksheet[cellAddress].t = 'n';
+				}
+			}
+		});
+	}
 
 	XLSX.utils.book_append_sheet(
 		workbook,

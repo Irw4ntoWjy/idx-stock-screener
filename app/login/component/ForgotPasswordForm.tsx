@@ -7,67 +7,276 @@ import {
 	InputOTPSlot,
 } from '@/components/ui/input-otp';
 import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import {
+	resetPassword,
+	verifyForgotPasswordOTP,
+} from '../server/forgot-password';
+import { Eye, EyeOff } from 'lucide-react';
 
-export const ForgotPasswordForm = () => {
-	const [otp, setOtp] = useState('');
-	const [loading, setLoading] = useState(false);
+type ForgotPasswordFormProps = {
+	email: string;
+	onResetSuccess?: () => void;
+};
+
+export const ForgotPasswordForm = ({
+	email,
+	onResetSuccess,
+}: ForgotPasswordFormProps) => {
+	const [otp, setOtp] = useState<string>('');
+	const [loading, setLoading] = useState<boolean>(false);
+	const [currentForm, setCurrentForm] = useState<
+		'otp' | 'reset'
+	>('otp');
+	const [token, setToken] = useState<string | undefined>(
+		undefined
+	);
+
+	// Reset password state
+	const [newPassword, setNewPassword] = useState('');
+	const [showNewPassword, setShowNewPassword] = useState(false);
+	const [confirmPassword, setConfirmPassword] = useState('');
+	const [showConfirmPassword, setShowConfirmPassword] =
+		useState(false);
 
 	const handleVerifyOTP = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (otp.length !== 6)
+		if (otp.length !== 6) {
 			return toast.error('Enter a valid 6-digit code');
+		}
 
 		setLoading(true);
-		// const result = await verifyForgotPasswordOTP(email, otp);
+		const result = await verifyForgotPasswordOTP(email, otp);
 		setLoading(false);
 
-		// if (result.success) {
-		//   toast.success('OTP verified!');
-		//   setStep('reset');
-		// } else {
-		//   toast.error(result.message ?? 'Invalid OTP');
-		// }
+		if (result.success) {
+			setToken(result.token);
+			document.cookie = `reset-pw-token=${
+				result.token
+			}; Max-Age=${60 * 10}; Path=/; SameSite=Strict; ${
+				process.env.NODE_ENV === 'production' ? 'Secure;' : ''
+			}`;
+
+			toast.success('OTP verified successfully!');
+			setCurrentForm('reset');
+		} else {
+			toast.error(result.message ?? 'Invalid or expired OTP');
+		}
+	};
+
+	const handleResetPassword = async (e: React.FormEvent) => {
+		e.preventDefault();
+
+		setLoading(true);
+		const result = await resetPassword(token!, newPassword);
+		setLoading(false);
+
+		if (result.success) {
+			// remove reset-pw-token
+			document.cookie =
+				'reset-pw-token=; Max-Age=0; Path=/; SameSite=Strict';
+			setNewPassword('');
+			setConfirmPassword('');
+
+			onResetSuccess?.();
+		} else {
+			toast.error(result.message ?? 'Failed to reset password');
+		}
 	};
 
 	return (
-		<form onSubmit={handleVerifyOTP} className="space-y-6">
-			<div className="flex flex-col items-center space-y-4">
-				<Label>Enter 6-digit code</Label>
-				<InputOTP
-					maxLength={6}
-					value={otp}
-					onChange={(v) => setOtp(v)}
-					disabled={loading}
-				>
-					<InputOTPGroup>
-						{[0, 1, 2, 3, 4, 5].map((i) => (
-							<InputOTPSlot key={i} index={i} />
-						))}
-					</InputOTPGroup>
-				</InputOTP>
+		<>
+			{currentForm === 'otp' ? (
+				<form onSubmit={handleVerifyOTP} className="space-y-6">
+					<div className="flex flex-col items-center space-y-4">
+						<div className="text-center space-y-2">
+							<Label className="text-lg">
+								Enter 6-digit code
+							</Label>
+							<p className="text-sm text-muted-foreground">
+								We sent a verification code to{' '}
+								<span className="font-medium">{email}</span>
+							</p>
+						</div>
 
-				<p className="text-sm text-center text-muted-foreground">
-					Didn't receive it?
-					<button
-						type="button"
-						className="font-medium text-blue-500 hover:underline ml-2 cursor-pointer"
-						// onClick={handleSendOTP}
+						<InputOTP
+							maxLength={6}
+							value={otp}
+							onChange={(v) => setOtp(v)}
+							disabled={loading}
+						>
+							<InputOTPGroup>
+								{[0, 1, 2, 3, 4, 5].map((i) => (
+									<InputOTPSlot key={i} index={i} />
+								))}
+							</InputOTPGroup>
+						</InputOTP>
+
+						<p className="text-sm text-center text-muted-foreground">
+							Didn't receive it?{' '}
+							<button
+								type="button"
+								className="font-medium text-blue-500 hover:underline ml-1 cursor-pointer"
+								disabled={loading}
+								// onClick={handleResendOTP} // implement if needed
+							>
+								Resend
+							</button>
+						</p>
+					</div>
+
+					<Button
+						type="submit"
+						className="w-full"
+						disabled={otp.length !== 6 || loading}
+					>
+						{loading ? 'Verifying...' : 'Verify Code'}
+					</Button>
+				</form>
+			) : (
+				<form
+					onSubmit={handleResetPassword}
+					className="space-y-6"
+				>
+					<div className="space-y-4">
+						<div className="space-y-2">
+							<Label htmlFor="new-password">New Password</Label>
+							<div className="relative">
+								<Input
+									id="new-password"
+									type={showNewPassword ? 'text' : 'password'}
+									value={newPassword}
+									onChange={(e) =>
+										setNewPassword(e.target.value)
+									}
+									placeholder="Enter new password"
+									required
+									disabled={loading}
+									className="pr-10"
+								/>
+								<button
+									type="button"
+									onClick={() => setShowNewPassword((v) => !v)}
+									className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+									aria-label={
+										showNewPassword
+											? 'Hide password'
+											: 'Show password'
+									}
+								>
+									{showNewPassword ? (
+										<EyeOff className="size-4" />
+									) : (
+										<Eye className="size-4" />
+									)}
+								</button>
+							</div>
+						</div>
+
+						<div className="space-y-2">
+							<Label htmlFor="confirm-password">
+								Confirm Password
+							</Label>
+							<div className="relative">
+								<Input
+									id="confirm-password"
+									type={
+										showConfirmPassword ? 'text' : 'password'
+									}
+									value={confirmPassword}
+									onChange={(e) =>
+										setConfirmPassword(e.target.value)
+									}
+									placeholder="Confirm new password"
+									required
+									disabled={loading}
+									className={`pr-10 ${
+										confirmPassword &&
+										newPassword !== confirmPassword
+											? 'border-red-500 focus-visible:ring-red-500'
+											: confirmPassword &&
+											  newPassword === confirmPassword
+											? 'border-green-500 focus-visible:ring-green-500'
+											: ''
+									}`}
+								/>
+								<button
+									type="button"
+									onClick={() =>
+										setShowConfirmPassword((v) => !v)
+									}
+									className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500 hover:text-gray-700 focus:outline-none"
+									aria-label={
+										showConfirmPassword
+											? 'Hide password'
+											: 'Show password'
+									}
+								>
+									{showConfirmPassword ? (
+										<EyeOff className="size-4" />
+									) : (
+										<Eye className="size-4" />
+									)}
+								</button>
+							</div>
+
+							{confirmPassword && (
+								<div className="flex items-center gap-2 text-sm animate-in fade-in slide-in-from-top-1">
+									{newPassword === confirmPassword ? (
+										<>
+											<svg
+												className="w-4 h-4 text-green-600"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M5 13l4 4L19 7"
+												/>
+											</svg>
+											<span className="text-green-600 font-medium">
+												Passwords match
+											</span>
+										</>
+									) : (
+										<>
+											<svg
+												className="w-4 h-4 text-red-600"
+												fill="none"
+												stroke="currentColor"
+												viewBox="0 0 24 24"
+											>
+												<path
+													strokeLinecap="round"
+													strokeLinejoin="round"
+													strokeWidth={2}
+													d="M6 18L18 6M6 6l12 12"
+												/>
+											</svg>
+											<span className="text-red-600 font-medium">
+												Passwords do not match
+											</span>
+										</>
+									)}
+								</div>
+							)}
+						</div>
+					</div>
+
+					<Button
+						type="submit"
+						className="w-full"
 						disabled={loading}
 					>
-						Resend
-					</button>
-				</p>
-			</div>
-
-			<Button
-				type="submit"
-				className="w-full"
-				disabled={otp.length !== 6 || loading}
-			>
-				{loading ? 'Verifying...' : 'Verify Code'}
-			</Button>
-		</form>
+						{loading ? 'Resetting...' : 'Reset Password'}
+					</Button>
+				</form>
+			)}
+		</>
 	);
 };

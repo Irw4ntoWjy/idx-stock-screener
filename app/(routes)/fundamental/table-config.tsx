@@ -51,8 +51,8 @@ export const getFundamentalColumns =
 			cell: ({ row }) => (
 				<div className="text-foreground font-semibold">
 					{row.original.volume
-						? `${formatNumber(row.original.volume)} Lot`
-						: ''}
+						? formatNumber(row.original.volume)
+						: 0}
 				</div>
 			),
 		},

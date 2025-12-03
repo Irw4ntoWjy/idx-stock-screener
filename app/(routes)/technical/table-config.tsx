@@ -47,15 +47,6 @@ export const getTechnicalColumns = (
 		),
 	},
 	{
-		id: 'prevClose',
-		header: 'Prev Close',
-		cell: ({ row }) => (
-			<div className="font-semibold text-foreground">
-				{formatNumber(row.original.prevClose)}
-			</div>
-		),
-	},
-	{
 		id: 'open',
 		header: 'Open',
 		cell: ({ row }) => (
@@ -79,8 +70,8 @@ export const getTechnicalColumns = (
 		cell: ({ row }) => (
 			<div className="text-foreground font-semibold">
 				{row.original.volume
-					? `${formatNumber(row.original.volume)} Lot`
-					: '0 Lot'}
+					? formatNumber(row.original.volume)
+					: 0}
 			</div>
 		),
 	},

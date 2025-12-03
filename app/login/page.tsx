@@ -16,17 +16,23 @@ import { useState } from 'react';
 import { ForgotPasswordForm } from './component/ForgotPasswordForm';
 
 export default function Login() {
+	const userEmail = 'irwantowijaya0@gmail.com';
 	const [showOtpForm, setShowOtpForm] = useState(false);
 
 	const handleForgotPassword = async (e: React.MouseEvent) => {
 		e.preventDefault();
 
-		const result = await fetchForgotPassword(
-			'tuathanlui88@gmail.com'
-		);
+		const result = await fetchForgotPassword(userEmail);
 		toast[result.success ? 'success' : 'error'](result.message);
 
 		setShowOtpForm(true);
+	};
+
+	const handlePasswordResetSuccess = () => {
+		setShowOtpForm(false);
+		toast.success(
+			'Password changed successfully! You can now log in.'
+		);
 	};
 
 	return (
@@ -45,7 +51,10 @@ export default function Login() {
 				</CardHeader>
 				<CardContent className="space-y-4 p-6">
 					{showOtpForm ? (
-						<ForgotPasswordForm />
+						<ForgotPasswordForm
+							email={userEmail}
+							onResetSuccess={handlePasswordResetSuccess}
+						/>
 					) : (
 						<>
 							<LoginForm />
