@@ -4,7 +4,7 @@ run-name: Deploying ${{ github.ref_name }}
 on:
   push:
     tags:
-      - "v*"
+      - 'v*'
   workflow_dispatch:
 
 permissions:
@@ -78,3 +78,4 @@ jobs:
             docker compose up -d --force-recreate --no-deps frontend
 
             docker image prune -f --filter "dangling=true"
+            docker images "$IMAGE" --format "{{.Repository}}:{{.Tag}}" | grep -v ":$TAG$" | xargs -r docker rmi -f
