@@ -169,7 +169,10 @@ export default function FundamentalPage({
 								const value = e.target.value;
 
 								debounce(() =>
-									refetchFundamentalData({ filter: value })
+									refetchFundamentalData({
+										filter: value,
+										page: 0,
+									})
 								);
 							}}
 							className="pl-10 border-border"

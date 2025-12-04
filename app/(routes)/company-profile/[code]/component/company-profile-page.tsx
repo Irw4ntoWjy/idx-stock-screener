@@ -82,22 +82,6 @@ export default function CompanyProfilePage({
 						for IDX listed companies
 					</p>
 				</div>
-
-				{openFrom !== 'fundamental' ? (
-					<div className="flex gap-3">
-						<div className="relative flex-1 max-w-md">
-							<Search className="absolute left-3 top-1/2 transform -translate-y-1/2 size-4 text-muted-foreground" />
-							<Input
-								placeholder="Search other company..."
-								value={searchQuery}
-								onChange={(e) => setSearchQuery(e.target.value)}
-								className="pl-10 border-border text-white"
-							/>
-						</div>
-					</div>
-				) : (
-					<></>
-				)}
 			</div>
 
 			<ScrollArea.Root

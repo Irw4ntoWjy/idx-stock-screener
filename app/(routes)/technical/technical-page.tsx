@@ -78,24 +78,27 @@ export default function TechnicalPage({
 				{
 					header: 'Open',
 					width: 10,
-					value: (r) => formatNumber(r.openPrice),
+					value: (r) => r.openPrice ?? 0,
+					cellStyle: { numFmt: '#,##0' },
 				},
 				{
 					header: 'Close',
 					width: 10,
-					value: (r) => formatNumber(r.closePrice),
+					value: (r) => r.closePrice ?? 0,
+					cellStyle: { numFmt: '#,##0' },
 				},
 				{
 					header: 'Volume (Lot)',
 					width: 15,
-					value: (r) =>
-						r.volume ? formatNumber(r.volume) : '0',
+					value: (r) => r.volume ?? 0,
+					cellStyle: { numFmt: '#,##0' },
 				},
 				...maKeys.map((key) => ({
 					header: `MA ${key}`,
 					width: 12,
 					value: (r: TechnicalPageSchema) =>
-						formatNumber(r.movingAverage[key] || 0),
+						r.movingAverage[key] ?? 0,
+					cellStyle: { numFmt: '#,##0' },
 				})),
 			],
 		});
@@ -129,7 +132,10 @@ export default function TechnicalPage({
 							onChange={(e) => {
 								const value = e.target.value;
 								debounce(() => {
-									refetchTechnicaldata({ filter: value });
+									refetchTechnicaldata({
+										filter: value,
+										page: 0,
+									});
 								});
 							}}
 							className="pl-10 border-border"
