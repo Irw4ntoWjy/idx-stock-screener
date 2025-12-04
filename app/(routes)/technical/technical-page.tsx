@@ -172,7 +172,11 @@ export default function TechnicalPage({
 					onPageChange={(newPage) =>
 						refetchTechnicaldata({ page: newPage })
 					}
-					fetchTime={dateFormatString(data.content[0].date)}
+					fetchTime={
+						data.content[0]
+							? dateFormatString(data.content[0].date)
+							: ''
+					}
 				/>
 			</div>
 

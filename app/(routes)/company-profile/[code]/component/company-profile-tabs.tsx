@@ -56,6 +56,14 @@ const TableSection = ({
 export const CompanyProfileTabs = ({
 	data,
 }: CompanyProfileTabsProps) => {
+	if (!data) {
+		return (
+			<div className="text-center py-10 text-muted-foreground">
+				No company data available
+			</div>
+		);
+	}
+
 	const {
 		companyProfile: profile,
 		companySecretary: secretary,

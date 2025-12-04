@@ -79,7 +79,7 @@ export const fetcher = async <T>(
 		data = await response.json();
 	}
 
-	if (options.schema) {
+	if (options.schema && data) {
 		return options.schema.parse(data);
 	}
 	return data as T;

@@ -105,28 +105,32 @@ export default function CompanyProfilePage({
 				style={{ height: 'calc(100vh - 14rem)' }}
 			>
 				<ScrollArea.Viewport className="w-full h-full">
-					<div className="flex items-start gap-4">
-						<div className="size-32 shrink-0 rounded-lg bg-white flex items-center justify-center">
-							<img
-								src={`https://www.idx.co.id/${data.companyProfile.logo}`}
-								alt={`${data.companyProfile.issuerName} Logo`}
-								width={108}
-								height={108}
-								className="object-contain max-w-full max-h-full"
-							/>
-						</div>
+					{data && data.companyProfile && (
+						<>
+							<div className="flex items-start gap-4">
+								<div className="size-32 shrink-0 rounded-lg bg-white flex items-center justify-center">
+									<img
+										src={`https://www.idx.co.id/${data.companyProfile.logo}`}
+										alt={`${data.companyProfile.issuerName} Logo`}
+										width={108}
+										height={108}
+										className="object-contain max-w-full max-h-full"
+									/>
+								</div>
 
-						<div className="flex flex-col justify-center min-h-[128px]">
-							<span className="text-2xl font-bold">
-								{data.companyProfile.issuerName}
-							</span>
-							<p className="text-sm text-muted-foreground mt-1">
-								• IDX Listed Company
-							</p>
-						</div>
-					</div>
+								<div className="flex flex-col justify-center min-h-[128px]">
+									<span className="text-2xl font-bold">
+										{data.companyProfile.issuerName}
+									</span>
+									<p className="text-sm text-muted-foreground mt-1">
+										• IDX Listed Company
+									</p>
+								</div>
+							</div>
 
-					<div className="w-full border-b py-2"></div>
+							<div className="w-full border-b py-2"></div>
+						</>
+					)}
 
 					<div>
 						<Tabs
