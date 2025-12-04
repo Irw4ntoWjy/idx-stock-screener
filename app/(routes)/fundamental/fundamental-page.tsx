@@ -171,7 +171,7 @@ export default function FundamentalPage({
 								debounce(() =>
 									refetchFundamentalData({
 										filter: value,
-										page: 0,
+										page: 1,
 									})
 								);
 							}}

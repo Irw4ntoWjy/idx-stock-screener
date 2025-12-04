@@ -134,7 +134,7 @@ export default function TechnicalPage({
 								debounce(() => {
 									refetchTechnicaldata({
 										filter: value,
-										page: 0,
+										page: 1,
 									});
 								});
 							}}
