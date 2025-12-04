@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import {
+	fetchForgotPassword,
 	resetPassword,
 	verifyForgotPasswordOTP,
 } from '../server/forgot-password';
@@ -33,6 +34,7 @@ export const ForgotPasswordForm = ({
 	const [token, setToken] = useState<string | undefined>(
 		undefined
 	);
+	const [disableResend, setDisableResend] = useState(false);
 
 	// Reset password state
 	const [newPassword, setNewPassword] = useState('');
@@ -40,6 +42,14 @@ export const ForgotPasswordForm = ({
 	const [confirmPassword, setConfirmPassword] = useState('');
 	const [showConfirmPassword, setShowConfirmPassword] =
 		useState(false);
+
+	const handleResendPassword = async (e: React.FormEvent) => {
+		e.preventDefault();
+		setDisableResend(true);
+
+		const result = await fetchForgotPassword(email);
+		toast[result.success ? 'success' : 'error'](result.message);
+	};
 
 	const handleVerifyOTP = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -90,12 +100,12 @@ export const ForgotPasswordForm = ({
 		<>
 			{currentForm === 'otp' ? (
 				<form onSubmit={handleVerifyOTP} className="space-y-6">
-					<div className="flex flex-col items-center space-y-4">
-						<div className="text-center space-y-2">
-							<Label className="text-lg">
+					<div className="flex flex-col items-center space-y-6 w-full">
+						<div className="flex flex-col items-center space-y-2 max-w-sm w-full">
+							<Label className="text-lg text-center">
 								Enter 6-digit code
 							</Label>
-							<p className="text-sm text-muted-foreground">
+							<p className="text-sm text-muted-foreground text-center px-4">
 								We sent a verification code to{' '}
 								<span className="font-medium">{email}</span>
 							</p>
@@ -106,6 +116,7 @@ export const ForgotPasswordForm = ({
 							value={otp}
 							onChange={(v) => setOtp(v)}
 							disabled={loading}
+							className="flex justify-center"
 						>
 							<InputOTPGroup>
 								{[0, 1, 2, 3, 4, 5].map((i) => (
@@ -114,17 +125,19 @@ export const ForgotPasswordForm = ({
 							</InputOTPGroup>
 						</InputOTP>
 
-						<p className="text-sm text-center text-muted-foreground">
-							Didn't receive it?{' '}
-							<button
-								type="button"
-								className="font-medium text-blue-500 hover:underline ml-1 cursor-pointer"
-								disabled={loading}
-								// onClick={handleResendOTP} // implement if needed
-							>
-								Resend
-							</button>
-						</p>
+						{!disableResend && (
+							<p className="text-sm text-center text-muted-foreground max-w-sm">
+								Didn't receive it?{' '}
+								<button
+									type="button"
+									className="font-medium text-blue-500 hover:underline cursor-pointer"
+									disabled={disableResend}
+									onClick={handleResendPassword}
+								>
+									Resend
+								</button>
+							</p>
+						)}
 					</div>
 
 					<Button
