@@ -14,7 +14,7 @@ import {
 	formatNumber,
 } from '@/lib/utils';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
-import { FileDown, Search } from 'lucide-react';
+import { FileDown, Search, Settings2 } from 'lucide-react';
 import { useState, useTransition } from 'react';
 
 import {
@@ -26,6 +26,7 @@ import {
 	technicalPage,
 	TechnicalPageSchema,
 } from './technical-page-schema';
+import { MaSettingsPopover } from './component/ma-settings';
 
 interface TechnicalPageProps {
 	initialData: Pagination<typeof technicalPage>;
@@ -149,6 +150,8 @@ export default function TechnicalPage({
 						<FileDown className="mr-2 size-4" />
 						Export to Excel
 					</Button>
+
+					<MaSettingsPopover />
 				</div>
 			</div>
 
