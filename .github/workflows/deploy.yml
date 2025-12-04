@@ -4,7 +4,7 @@ run-name: Deploying ${{ github.ref_name }}
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
   workflow_dispatch:
 
 permissions:
@@ -45,8 +45,6 @@ jobs:
           tags: |
             ${{ env.IMAGE }}:${{ env.TAG }}
             ${{ env.IMAGE }}:latest
-          build-args: |
-            IDX_STOCK_SCREENER_BE=${{ secrets.IDX_STOCK_SCREENER_BE }}
 
   deploy-to-vps:
     needs: build-and-push
