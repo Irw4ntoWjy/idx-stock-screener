@@ -8,6 +8,8 @@ import {
 } from '@/components/ui/popover';
 import { Check, Settings2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
+import { postNewMaConfig } from '../server/fetch-technical-data';
 
 interface MAPeriods {
 	ma1: number;
@@ -38,7 +40,11 @@ export const MaSettingsPopover = ({ maConfig }: PageProps) => {
 		temp[1] !== maConfig[1] ||
 		temp[2] !== maConfig[2];
 
-	const handleApply = () => {
+	const handleApply = async () => {
+		await postNewMaConfig(temp);
+		toast.success(
+			'The process is ongoing, data will be updated automatically in 5-15 minutes.'
+		);
 		setOpen(false);
 	};
 
