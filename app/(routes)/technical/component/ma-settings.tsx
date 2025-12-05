@@ -6,93 +6,122 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from '@/components/ui/popover';
-import { Settings2 } from 'lucide-react';
-import { useState } from 'react';
+import { Check, Settings2 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
-export const MaSettingsPopover = () => {
-	const [maPeriods, setMaPeriods] = useState({
-		ma1: 5,
-		ma2: 60,
-		ma3: 200,
-	});
+interface MAPeriods {
+	ma1: number;
+	ma2: number;
+	ma3: number;
+}
+
+type PageProps = {
+	maConfig: number[];
+};
+
+const labels = ['MA 1', 'MA 2', 'MA 3'];
+const placeholders = ['e.g. 9', 'e.g. 50', 'e.g. 200'];
+
+export const MaSettingsPopover = ({ maConfig }: PageProps) => {
+	const [open, setOpen] = useState(false);
+	const [temp, setTemp] = useState<number[]>(maConfig);
+
+	// Sync temp values with applied when popover opens
+	useEffect(() => {
+		if (open) {
+			setTemp(maConfig);
+		}
+	}, [open, maConfig]);
+
+	const hasChanges =
+		temp[0] !== maConfig[0] ||
+		temp[1] !== maConfig[1] ||
+		temp[2] !== maConfig[2];
+
+	const handleApply = () => {
+		setOpen(false);
+	};
+
+	const handleReset = () => {
+		setTemp([...maConfig]);
+	};
+
+	const handleValueChange = (index: number, value: string) => {
+		const num = Math.max(1, parseInt(value) || 1);
+		setTemp((prev) => {
+			const next = [...prev];
+			next[index] = num;
+			return next;
+		});
+	};
 
 	return (
-		<Popover>
+		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger asChild>
-				<Button variant="outline">
-					<Settings2 className="h-4 w-4" />
+				<Button
+					variant="outline"
+					className="gap-2 bg-border hover:bg-ring text-foreground transition-colors"
+				>
+					<Settings2 className="size-4" />
 					MA Settings
 				</Button>
 			</PopoverTrigger>
+
 			<PopoverContent
-				className="w-64 bg-background border-border"
+				className="w-56 p-5 bg-card border-border"
 				align="end"
 			>
-				<div className="space-y-4">
-					<h4 className="font-medium text-sm">
-						Moving Average Periods
-					</h4>
-					<div className="space-y-3">
-						<div className="flex items-center justify-between gap-3">
-							<Label
-								htmlFor="ma1"
-								className="text-sm text-muted-foreground"
+				<div className="space-y-5">
+					<div className="flex items-center justify-between">
+						<h4 className="font-semibold text-foreground">
+							Moving Average Periods
+						</h4>
+					</div>
+
+					<div className="space-y-4">
+						{[0, 1, 2].map((index) => (
+							<div
+								key={index}
+								className="flex items-center justify-between gap-4"
 							>
-								MA 1
-							</Label>
-							<Input
-								id="ma1"
-								type="number"
-								value={maPeriods.ma1}
-								onChange={(e) =>
-									setMaPeriods((prev) => ({
-										...prev,
-										ma1: parseInt(e.target.value) || 5,
-									}))
-								}
-								className="w-20 h-8 text-center bg-secondary"
-							/>
-						</div>
-						<div className="flex items-center justify-between gap-3">
-							<Label
-								htmlFor="ma2"
-								className="text-sm text-muted-foreground"
+								<Label className="text-sm font-medium text-muted-foreground w-24 text-right">
+									{labels[index]}
+								</Label>
+								<Input
+									type="number"
+									min="1"
+									max="9999"
+									value={temp[index]}
+									onChange={(e) =>
+										handleValueChange(index, e.target.value)
+									}
+									placeholder={placeholders[index]}
+									className="w-20 h-9 text-center font-medium bg-muted/50 focus:bg-muted"
+								/>
+							</div>
+						))}
+					</div>
+
+					<div className="flex justify-end gap-2 pt-2 border-t border-border/50">
+						{hasChanges && (
+							<Button
+								size="sm"
+								onClick={handleReset}
+								variant="outline"
+								className="bg-muted text-foreground"
 							>
-								MA 2
-							</Label>
-							<Input
-								id="ma2"
-								type="number"
-								value={maPeriods.ma2}
-								onChange={(e) =>
-									setMaPeriods((prev) => ({
-										...prev,
-										ma2: parseInt(e.target.value) || 60,
-									}))
-								}
-								className="w-20 h-8 text-center bg-secondary"
-							/>
-						</div>
-						<div className="flex items-center justify-between gap-3">
-							<Label
-								htmlFor="ma3"
-								className="text-sm text-muted-foreground"
-							>
-								MA 3
-							</Label>
-							<Input
-								id="ma3"
-								type="number"
-								value={maPeriods.ma3}
-								onChange={(e) =>
-									setMaPeriods((prev) => ({
-										...prev,
-										ma3: parseInt(e.target.value) || 200,
-									}))
-								}
-								className="w-20 h-8 text-center bg-secondary"
-							/>
-						</div>
+								Reset
+							</Button>
+						)}
+						<Button
+							size="sm"
+							onClick={handleApply}
+							disabled={!hasChanges}
+							className="gap-1.5"
+						>
+							<Check className="size-3.5" />
+							Apply
+						</Button>
 					</div>
 				</div>
 			</PopoverContent>

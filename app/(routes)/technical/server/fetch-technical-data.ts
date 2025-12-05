@@ -24,3 +24,8 @@ export async function getTechnicalData({
 export const getTechnicalExportToExcel = async () => {
 	return fetcher(`/idx-stocks-ohlcv/get-export-excel-data`);
 };
+
+// get-current-ma-config
+export const getMaConfig = async () => {
+	return fetcher<number[]>(`/moving-average/current-config`);
+};
