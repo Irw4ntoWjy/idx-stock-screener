@@ -15,12 +15,40 @@ export async function getTechnicalData({
 		size: size.toString(),
 		...(filter && { filter }),
 	});
-	return fetcher<Pagination<typeof technicalPage>>(
+	return await fetcher<Pagination<typeof technicalPage>>(
 		`/idx-stocks-ohlcv/technical-data?${searchParams}`
 	);
 }
 
 // get-export-excel
 export const getTechnicalExportToExcel = async () => {
-	return fetcher(`/idx-stocks-ohlcv/get-export-excel-data`);
+	return await fetcher(
+		`/idx-stocks-ohlcv/get-export-excel-data`
+	);
+};
+
+// get-current-ma-config
+export const getMaConfig = async () => {
+	return await fetcher<number[]>(
+		`/moving-average/current-config`
+	);
+};
+
+// post new ma config
+export const postNewMaConfig = async (config: number[]) => {
+	const AUTOMATION_URL = process.env.IDX_STOCK_AUTOMATION;
+
+	if (!AUTOMATION_URL) {
+		throw new Error('Automation variable is not set');
+	}
+
+	const params = new URLSearchParams();
+	params.append('new_ma', config.join(','));
+
+	return await fetcher(
+		`/idx-screeners/moving-average?` + params,
+		{
+			baseUrl: AUTOMATION_URL,
+		}
+	);
 };

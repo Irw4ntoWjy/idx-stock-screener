@@ -28,6 +28,7 @@ type FetchOptions<T> = Omit<RequestInit, 'method'> & {
 	cache?: CacheMode | 'no-cache';
 	responseType?: 'JSON' | 'TEXT';
 	schema?: z4.ZodType<T>;
+	baseUrl?: string;
 };
 
 export const fetcher = async <T>(
@@ -38,12 +39,18 @@ export const fetcher = async <T>(
 		method = 'GET',
 		tags = [],
 		revalidate = false,
+		baseUrl,
 		...fetchOptions
 	} = options;
 
-	const base = BACKEND_URL.endsWith('/')
-		? BACKEND_URL
-		: BACKEND_URL + '/';
+	const effectiveBaseUrl = baseUrl || BACKEND_URL;
+	if (!effectiveBaseUrl) {
+		throw new Error('No base URL provided');
+	}
+
+	const base = effectiveBaseUrl.endsWith('/')
+		? effectiveBaseUrl
+		: effectiveBaseUrl + '/';
 	const path = endpoint.startsWith('/')
 		? endpoint.slice(1)
 		: endpoint;
@@ -58,7 +65,7 @@ export const fetcher = async <T>(
 		},
 		cache: 'no-cache',
 		next: {
-			tags: ['idx-stocks', ...tags],
+			tags: [...tags],
 			revalidate,
 		},
 	});

@@ -1,4 +1,7 @@
-import { getTechnicalData } from './server/fetch-technical-data';
+import {
+	getMaConfig,
+	getTechnicalData,
+} from './server/fetch-technical-data';
 import TechnicalPage from './technical-page';
 
 export default async function Technical() {
@@ -7,5 +10,9 @@ export default async function Technical() {
 		size: 20,
 		filter: undefined,
 	});
-	return <TechnicalPage initialData={data} />;
+	const maConfig = await getMaConfig();
+
+	return (
+		<TechnicalPage initialData={data} maConfig={maConfig} />
+	);
 }

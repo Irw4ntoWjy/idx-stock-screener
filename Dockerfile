@@ -32,6 +32,7 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
 COPY --from=builder --chown=nextjs:nodejs /app/package.json ./package.json
 
 ENV IDX_STOCK_SCREENER_BE=http://backend:8080/stocks-screener
+ENV IDX_STOCK_AUTOMATION=http://python:8000
 
 USER nextjs
 EXPOSE 3000
