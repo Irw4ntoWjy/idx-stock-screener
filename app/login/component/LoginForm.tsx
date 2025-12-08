@@ -1,14 +1,17 @@
 'use client';
 
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Eye, EyeOff } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import { fetchLoginInfo } from '../server/login';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Eye, EyeOff } from 'lucide-react';
 
 export const LoginForm = () => {
+	const router = useRouter();
+
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 	const [showPassword, setShowPassword] = useState(false);
@@ -23,12 +26,13 @@ export const LoginForm = () => {
 			return;
 		}
 
-		try {
-			await fetchLoginInfo(username, password);
-		} catch (error) {
-			const message =
-				error instanceof Error ? error.message : 'Login failed';
-			toast.error(message);
+		const response = await fetchLoginInfo(username, password);
+
+		if (response.success) {
+			toast.success('Successfully Login');
+			router.push('/technical');
+		} else {
+			toast.error(response.error || 'Login failed');
 		}
 	};
 

@@ -9,14 +9,14 @@ import {
 } from '@/components/ui/card';
 import { Key, TrendingUp } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
+import { toast } from 'sonner';
+import { ForgotPasswordForm } from './component/ForgotPasswordForm';
 import { LoginForm } from './component/LoginForm';
 import { fetchForgotPassword } from './server/forgot-password';
-import { toast } from 'sonner';
-import { useState } from 'react';
-import { ForgotPasswordForm } from './component/ForgotPasswordForm';
 
 export default function Login() {
-	const userEmail = 'tuathanlui88@gmail.com';
+	const userEmail = 'irwantowijaya0506@gmail.com';
 	const [showOtpForm, setShowOtpForm] = useState(false);
 
 	const handleForgotPassword = async (e: React.MouseEvent) => {
