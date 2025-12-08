@@ -30,7 +30,7 @@ export const LoginForm = () => {
 
 		if (response.success) {
 			toast.success('Successfully Login');
-			router.push('/technical');
+			setTimeout(() => router.push('/technical'), 800);
 		} else {
 			toast.error(response.error || 'Login failed');
 		}
