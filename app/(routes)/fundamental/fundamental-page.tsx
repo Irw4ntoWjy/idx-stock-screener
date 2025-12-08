@@ -87,6 +87,11 @@ export default function FundamentalPage({
 						cellStyle: { numFmt: '[$-id-ID]#,##0.00' },
 					},
 					{
+						header: 'Suspend',
+						width: 8,
+						value: (r) => (r.suspend ? 'Ya' : 'Tidak'),
+					},
+					{
 						header: 'Close',
 						width: 14,
 						value: (r) => r.closePrice ?? 0,
@@ -199,7 +204,20 @@ export default function FundamentalPage({
 				>
 					<ScrollArea.Viewport className="h-full w-full">
 						<div className="min-w-max">
-							<DataTable columns={columns} data={data.content} />
+							<DataTable
+								columns={columns}
+								data={data.content}
+								getRowClassName={(row) => {
+									const stock =
+										row.original as FundamentalPageSchema;
+
+									if (stock.suspend) {
+										return 'bg-red-200 hover:bg-red-100';
+									}
+
+									return '';
+								}}
+							/>
 						</div>
 					</ScrollArea.Viewport>
 					<ScrollArea.Scrollbar

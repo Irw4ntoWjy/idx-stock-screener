@@ -9,6 +9,7 @@ export const technicalPage = z4.object({
 	openPrice: z4.number(),
 	closePrice: z4.number(),
 	volume: z4.number(),
+	suspend: z4.boolean(),
 	movingAverage: z4.record(
 		z4.string().regex(/^\d+$/),
 		z4.number()

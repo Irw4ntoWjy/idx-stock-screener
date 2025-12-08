@@ -4,6 +4,7 @@ export const fundamentalPage = z4.object({
 	sector: z4.string(),
 	stockCode: z4.string(),
 	name: z4.string(),
+	suspend: z4.boolean(),
 	marketCap: z4.number(),
 	volume: z4.number(),
 	closePrice: z4.number(),

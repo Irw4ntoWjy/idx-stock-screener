@@ -19,10 +19,16 @@ export const getFundamentalColumns =
 			),
 		},
 		{
-			accessorKey: 'code',
+			id: 'code',
 			header: 'Code',
 			cell: ({ row }) => (
-				<div className="font-bold text-cyan-500">
+				<div
+					className={`font-bold ${
+						row.original.suspend
+							? 'text-red-700'
+							: 'text-cyan-500'
+					}`}
+				>
 					{row.original.stockCode}
 				</div>
 			),
