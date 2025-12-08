@@ -21,11 +21,6 @@ export default function Navbar() {
 			icon: FileText,
 			label: 'Fundamental',
 		},
-		{
-			path: '/company-profile/BBCA',
-			icon: Building,
-			label: 'Company Profile',
-		},
 	];
 
 	return (
