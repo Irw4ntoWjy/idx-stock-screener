@@ -1,7 +1,9 @@
 import z4 from 'zod/v4';
 
 export const technicalPage = z4.object({
+	sector: z4.string(),
 	stockCode: z4.string(),
+	marketCap: z4.number(),
 	date: z4.string(),
 	name: z4.string(),
 	openPrice: z4.number(),

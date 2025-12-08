@@ -29,6 +29,15 @@ export const getTechnicalColumns = (
 	maKeys: string[] = []
 ): ColumnDef<TechnicalPageSchema>[] => [
 	{
+		id: 'sector',
+		header: 'Sector',
+		cell: ({ row }) => (
+			<div className="font-bold text-foreground">
+				{row.original.sector}
+			</div>
+		),
+	},
+	{
 		id: 'code',
 		header: 'Code',
 		cell: ({ row }) => (
@@ -47,6 +56,26 @@ export const getTechnicalColumns = (
 		),
 	},
 	{
+		id: 'marketCap',
+		header: 'Market Cap',
+		cell: ({ row }) => (
+			<div className="font-semibold text-foreground">
+				{formatNumber(row.original.marketCap)}
+			</div>
+		),
+	},
+	{
+		id: 'volume',
+		header: 'Volume (Lot)',
+		cell: ({ row }) => (
+			<div className="text-foreground font-semibold">
+				{row.original.volume
+					? formatNumber(row.original.volume)
+					: 0}
+			</div>
+		),
+	},
+	{
 		id: 'open',
 		header: 'Open',
 		cell: ({ row }) => (
@@ -61,17 +90,6 @@ export const getTechnicalColumns = (
 		cell: ({ row }) => (
 			<div className="font-semibold text-card-foreground">
 				{formatNumber(row.original.closePrice)}
-			</div>
-		),
-	},
-	{
-		id: 'volume',
-		header: 'Volume (Lot)',
-		cell: ({ row }) => (
-			<div className="text-foreground font-semibold">
-				{row.original.volume
-					? formatNumber(row.original.volume)
-					: 0}
 			</div>
 		),
 	},
