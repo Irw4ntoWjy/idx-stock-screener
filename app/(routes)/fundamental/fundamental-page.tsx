@@ -98,6 +98,11 @@ export default function FundamentalPage({
 						cellStyle: { numFmt: '[$-id-ID]#,##0.00' },
 					},
 					{
+						header: 'Stock Class',
+						width: 16,
+						value: (r) => r.indexCode ?? '',
+					},
+					{
 						header: 'BV',
 						width: 16,
 						value: (r) => r.bv ?? 0,

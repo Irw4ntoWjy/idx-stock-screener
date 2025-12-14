@@ -111,6 +111,11 @@ export default function TechnicalPage({
 					value: (r) => r.closePrice ?? 0,
 					cellStyle: { numFmt: '[$-id-ID]#,##0.00' },
 				},
+				{
+					header: 'Stock Class',
+					width: 16,
+					value: (r) => r.indexCode ?? '',
+				},
 				...maKeys.map((key) => ({
 					header: `MA ${key}`,
 					width: 12,
@@ -200,6 +205,13 @@ export default function TechnicalPage({
 						className="w-1 pt-10 pb-1"
 					>
 						<ScrollArea.Thumb className="bg-muted-foreground dark:bg-primary rounded-full" />
+					</ScrollArea.Scrollbar>
+					<ScrollArea.Scrollbar
+						orientation="horizontal"
+						className="h-1 bg-white dark:bg-card relative"
+					>
+						<div className="absolute inset-0 dark:bg-primary bg-muted-foreground rounded-full" />
+						<ScrollArea.Thumb className="relative z-10 bg-muted-foreground dark:bg-primary rounded-full" />
 					</ScrollArea.Scrollbar>
 					<ScrollArea.Corner className="bg-secondary" />
 				</ScrollArea.Root>
