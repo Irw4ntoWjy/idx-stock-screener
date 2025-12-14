@@ -72,6 +72,15 @@ export const getFundamentalColumns =
 			),
 		},
 		{
+			id: 'indexCode',
+			header: 'Stock Class',
+			cell: ({ row }) => (
+				<div className="font-semibold text-foreground">
+					{row.original.indexCode ?? '-'}
+				</div>
+			),
+		},
+		{
 			accessorKey: 'bv',
 			header: 'BV',
 			cell: ({ row }) => (

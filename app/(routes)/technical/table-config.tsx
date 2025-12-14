@@ -84,7 +84,9 @@ export const getTechnicalColumns = (
 		header: 'Open',
 		cell: ({ row }) => (
 			<div className="font-semibold text-card-foreground">
-				{formatNumber(row.original.openPrice)}
+				{row.original.openPrice
+					? formatNumber(row.original.openPrice)
+					: 0}
 			</div>
 		),
 	},
@@ -94,6 +96,15 @@ export const getTechnicalColumns = (
 		cell: ({ row }) => (
 			<div className="font-semibold text-card-foreground">
 				{formatNumber(row.original.closePrice)}
+			</div>
+		),
+	},
+	{
+		id: 'indexCode',
+		header: 'Stock Class',
+		cell: ({ row }) => (
+			<div className="font-semibold text-foreground">
+				{row.original.indexCode ?? '-'}
 			</div>
 		),
 	},
