@@ -11,12 +11,6 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { postNewMaConfig } from '../server/fetch-technical-data';
 
-interface MAPeriods {
-	ma1: number;
-	ma2: number;
-	ma3: number;
-}
-
 type PageProps = {
 	maConfig: number[];
 };
@@ -41,7 +35,32 @@ export const MaSettingsPopover = ({ maConfig }: PageProps) => {
 		temp[2] !== maConfig[2];
 
 	const handleApply = async () => {
-		await postNewMaConfig(temp);
+		const jobId = crypto.randomUUID();
+
+		const eSource = new EventSource(
+			`${process.env.IDX_STOCK_SCREENER_BE}/moving-average/ma-config-sse?jobId=${jobId}`
+		);
+
+		eSource.addEventListener('open', () => {
+			console.log('[SSE] connection opened');
+		});
+
+		eSource.addEventListener('DONE', (event) => {
+			console.log('[SSE] DONE received', event.data);
+			eSource.close();
+		});
+
+		eSource.addEventListener('ERROR', (event) => {
+			console.error('[SSE] ERROR received', event);
+			eSource.close();
+		});
+
+		eSource.onerror = (err) => {
+			console.error('[SSE] connection error', err);
+			eSource.close();
+		};
+
+		await postNewMaConfig(jobId, temp);
 		toast.success(
 			'The process is ongoing, data will be updated automatically in 5-15 minutes.'
 		);

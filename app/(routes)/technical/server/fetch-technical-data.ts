@@ -35,7 +35,10 @@ export const getMaConfig = async () => {
 };
 
 // post new ma config
-export const postNewMaConfig = async (config: number[]) => {
+export const postNewMaConfig = async (
+	jobId: string,
+	config: number[]
+) => {
 	const AUTOMATION_URL = process.env.IDX_STOCK_AUTOMATION;
 
 	if (!AUTOMATION_URL) {
@@ -43,6 +46,7 @@ export const postNewMaConfig = async (config: number[]) => {
 	}
 
 	const params = new URLSearchParams();
+	params.append('jobId', jobId);
 	params.append('new_ma', config.join(','));
 
 	return await fetcher(
