@@ -2,7 +2,7 @@
 
 import z4 from 'zod/v4';
 
-const BACKEND_URL = process.env.IDX_STOCK_SCREENER_BE;
+const BACKEND_URL = process.env.IDX_STOCK_SCREENER_INTERNAL;
 
 if (!BACKEND_URL) {
 	throw new Error('Backend variable is not set');
