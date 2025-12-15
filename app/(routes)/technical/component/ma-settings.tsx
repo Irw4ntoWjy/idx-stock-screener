@@ -38,7 +38,7 @@ export const MaSettingsPopover = ({ maConfig }: PageProps) => {
 		const jobId = crypto.randomUUID();
 
 		const eSource = new EventSource(
-			`${process.env.NEXT_PUBLIC_IDX_STOCK_SCREENER}/moving-average/ma-config-sse?jobId=${jobId}`
+			`${process.env.NEXT_PUBLIC_IDX_STOCK_SCREENER}/stocks-screener/moving-average/ma-config-sse?jobId=${jobId}`
 		);
 
 		eSource.addEventListener('open', () => {
