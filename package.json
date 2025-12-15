@@ -1,6 +1,6 @@
 {
 	"name": "stocks-tracker",
-	"version": "0.0.1-release-13",
+	"version": "0.0.1-release-14",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
