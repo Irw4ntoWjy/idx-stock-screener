@@ -103,7 +103,7 @@ export const getTechnicalColumns = (
 		id: 'indexCode',
 		header: 'Stock Class',
 		cell: ({ row }) => (
-			<div className="font-semibold text-foreground">
+			<div className="font-semibold text-foreground text-wrap max-w-[200px] lg:max-w-[300px]">
 				{row.original.indexCode ?? '-'}
 			</div>
 		),
