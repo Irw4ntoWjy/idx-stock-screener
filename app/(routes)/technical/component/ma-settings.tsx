@@ -10,7 +10,6 @@ import { Check, Settings2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { postNewMaConfig } from '../server/fetch-technical-data';
-import { useRouter } from 'next/navigation';
 
 type PageProps = {
 	maConfig: number[];
@@ -20,8 +19,6 @@ const labels = ['MA 1', 'MA 2', 'MA 3'];
 const placeholders = ['e.g. 9', 'e.g. 50', 'e.g. 200'];
 
 export const MaSettingsPopover = ({ maConfig }: PageProps) => {
-	const router = useRouter();
-
 	const [open, setOpen] = useState(false);
 	const [temp, setTemp] = useState<number[]>(maConfig);
 
@@ -49,8 +46,8 @@ export const MaSettingsPopover = ({ maConfig }: PageProps) => {
 		});
 
 		eSource.addEventListener('DONE', (event) => {
-			router.refresh();
 			toast.success('Moving Average Change Successfull');
+			window.location.reload();
 
 			eSource.close();
 		});
