@@ -42,18 +42,20 @@ export const MaSettingsPopover = ({ maConfig }: PageProps) => {
 		);
 
 		eSource.addEventListener('open', () => {
-			console.log('[SSE] connection opened');
+			toast.success(
+				'Please wait 5-10 minutes and the data will automatically update'
+			);
+			setOpen(false);
 		});
 
-		eSource.addEventListener('DONE', (event) => {
+		eSource.addEventListener('DONE', () => {
 			toast.success('Moving Average Change Successfull');
 			window.location.reload();
 
 			eSource.close();
 		});
 
-		eSource.addEventListener('ERROR', (event) => {
-			console.error('[SSE] ERROR received', event);
+		eSource.addEventListener('ERROR', () => {
 			eSource.close();
 		});
 
