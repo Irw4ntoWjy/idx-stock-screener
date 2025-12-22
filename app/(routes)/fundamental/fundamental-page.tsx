@@ -10,7 +10,6 @@ import {
 	debounce,
 	ExportConfig,
 	exportToExcel,
-	formatNumber,
 } from '@/lib/utils';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
 import { FileDown, Search } from 'lucide-react';
@@ -68,6 +67,21 @@ export default function FundamentalPage({
 						width: 18,
 						value: (r) => r.sector || '',
 					},
+					{
+						header: 'Sub Industry',
+						width: 18,
+						value: (r) => r.subIndustry ?? '',
+					},
+					{
+						header: 'Stock Class',
+						width: 16,
+						value: (r) => r.indexCode ?? '',
+					},
+					{
+						header: 'Suspend',
+						width: 8,
+						value: (r) => (r.suspend ? 'Ya' : 'Tidak'),
+					},
 					{ header: 'Name', width: 38, value: (r) => r.name },
 					{
 						header: 'Code',
@@ -86,21 +100,12 @@ export default function FundamentalPage({
 						value: (r) => r.volume ?? 0,
 						cellStyle: { numFmt: '[$-id-ID]#,##0.00' },
 					},
-					{
-						header: 'Suspend',
-						width: 8,
-						value: (r) => (r.suspend ? 'Ya' : 'Tidak'),
-					},
+
 					{
 						header: 'Close',
 						width: 14,
 						value: (r) => r.closePrice ?? 0,
 						cellStyle: { numFmt: '[$-id-ID]#,##0.00' },
-					},
-					{
-						header: 'Stock Class',
-						width: 16,
-						value: (r) => r.indexCode ?? '',
 					},
 					{
 						header: 'BV',

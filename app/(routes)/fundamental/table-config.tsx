@@ -19,6 +19,33 @@ export const getFundamentalColumns =
 			),
 		},
 		{
+			id: 'subIndustry',
+			header: 'Sub Industry',
+			cell: ({ row }) => (
+				<div className="font-semibold text-foreground">
+					{row.original.subIndustry}
+				</div>
+			),
+		},
+		{
+			id: 'indexCode',
+			header: 'Stock Class',
+			cell: ({ row }) => (
+				<div className="font-semibold text-foreground text-wrap max-w-[200px] lg:max-w-[300px]">
+					{row.original.indexCode ?? '-'}
+				</div>
+			),
+		},
+		{
+			accessorKey: 'name',
+			header: 'Name',
+			cell: ({ row }) => (
+				<div className="text-[16px] text-foreground">
+					{row.original.name}
+				</div>
+			),
+		},
+		{
 			id: 'code',
 			header: 'Code',
 			cell: ({ row }) => (
@@ -30,15 +57,6 @@ export const getFundamentalColumns =
 					}`}
 				>
 					{row.original.stockCode}
-				</div>
-			),
-		},
-		{
-			accessorKey: 'name',
-			header: 'Name',
-			cell: ({ row }) => (
-				<div className="text-[16px] text-foreground">
-					{row.original.name}
 				</div>
 			),
 		},
@@ -68,15 +86,6 @@ export const getFundamentalColumns =
 			cell: ({ row }) => (
 				<div className="font-semibold text-card-foreground">
 					{formatNumber(row.original.closePrice)}
-				</div>
-			),
-		},
-		{
-			id: 'indexCode',
-			header: 'Stock Class',
-			cell: ({ row }) => (
-				<div className="font-semibold text-foreground text-wrap max-w-[200px] lg:max-w-[300px]">
-					{row.original.indexCode ?? '-'}
 				</div>
 			),
 		},

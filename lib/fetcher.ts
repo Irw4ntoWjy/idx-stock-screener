@@ -5,7 +5,7 @@ import z4 from 'zod/v4';
 // using localhost for build time
 const BACKEND_URL =
 	process.env.IDX_STOCK_SCREENER_INTERNAL ??
-	'http://localhost:8080';
+	'http://localhost:8080/stocks-screener';
 
 if (!BACKEND_URL) {
 	throw new Error('Backend variable is not set');

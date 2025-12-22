@@ -38,15 +38,20 @@ export const getTechnicalColumns = (
 		),
 	},
 	{
-		id: 'code',
-		header: 'Code',
+		id: 'subIndustry',
+		header: 'Sub Industry',
 		cell: ({ row }) => (
-			<div
-				className={`font-bold ${
-					row.original.suspend ? 'text-red-700' : 'text-cyan-500'
-				}`}
-			>
-				{row.original.stockCode}
+			<div className="font-semibold text-foreground">
+				{row.original.subIndustry}
+			</div>
+		),
+	},
+	{
+		id: 'indexCode',
+		header: 'Stock Class',
+		cell: ({ row }) => (
+			<div className="font-semibold text-foreground text-wrap max-w-[200px] lg:max-w-[300px]">
+				{row.original.indexCode ?? '-'}
 			</div>
 		),
 	},
@@ -56,6 +61,19 @@ export const getTechnicalColumns = (
 		cell: ({ row }) => (
 			<div className="text-[16px] text-foreground">
 				{row.original.name}
+			</div>
+		),
+	},
+	{
+		id: 'code',
+		header: 'Code',
+		cell: ({ row }) => (
+			<div
+				className={`font-bold ${
+					row.original.suspend ? 'text-red-700' : 'text-cyan-500'
+				}`}
+			>
+				{row.original.stockCode}
 			</div>
 		),
 	},
@@ -100,11 +118,11 @@ export const getTechnicalColumns = (
 		),
 	},
 	{
-		id: 'indexCode',
-		header: 'Stock Class',
+		id: 'fraction',
+		header: 'Fraction',
 		cell: ({ row }) => (
-			<div className="font-semibold text-foreground text-wrap max-w-[200px] lg:max-w-[300px]">
-				{row.original.indexCode ?? '-'}
+			<div className="font-semibold text-card-foreground">
+				{formatNumber(row.original.fraction)}
 			</div>
 		),
 	},

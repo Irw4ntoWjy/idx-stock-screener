@@ -2,6 +2,7 @@ import z4 from 'zod/v4';
 
 export const fundamentalPage = z4.object({
 	sector: z4.string(),
+	subIndustry: z4.string(),
 	stockCode: z4.string(),
 	name: z4.string(),
 	suspend: z4.boolean(),

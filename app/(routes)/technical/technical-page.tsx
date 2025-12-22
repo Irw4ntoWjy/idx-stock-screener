@@ -80,6 +80,21 @@ export default function TechnicalPage({
 					width: 18,
 					value: (r) => r.sector || '',
 				},
+				{
+					header: 'Sub Industry',
+					width: 18,
+					value: (r) => r.subIndustry ?? '',
+				},
+				{
+					header: 'Stock Class',
+					width: 16,
+					value: (r) => r.indexCode ?? '',
+				},
+				{
+					header: 'Suspend',
+					width: 8,
+					value: (r) => (r.suspend ? 'Ya' : 'Tidak'),
+				},
 				{ header: 'Name', width: 36, value: (r) => r.name },
 				{ header: 'Code', width: 8, value: (r) => r.stockCode },
 				{
@@ -95,11 +110,6 @@ export default function TechnicalPage({
 					cellStyle: { numFmt: '[$-id-ID]#,##0.00' },
 				},
 				{
-					header: 'Suspend',
-					width: 8,
-					value: (r) => (r.suspend ? 'Ya' : 'Tidak'),
-				},
-				{
 					header: 'Open',
 					width: 10,
 					value: (r) => r.openPrice ?? 0,
@@ -112,9 +122,10 @@ export default function TechnicalPage({
 					cellStyle: { numFmt: '[$-id-ID]#,##0.00' },
 				},
 				{
-					header: 'Stock Class',
-					width: 16,
-					value: (r) => r.indexCode ?? '',
+					header: 'Fraction',
+					width: 10,
+					value: (r) => r.fraction ?? 0,
+					cellStyle: { numFmt: '[$-id-ID]#,##0.00' },
 				},
 				...maKeys.map((key) => ({
 					header: `MA ${key}`,
