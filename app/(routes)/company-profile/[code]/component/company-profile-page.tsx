@@ -9,7 +9,7 @@ import {
 } from '@/components/ui/tabs';
 import { timeout } from '@/lib/utils';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
-import { ArrowLeft, ListRestart } from 'lucide-react';
+import { ArrowLeft, RefreshCcw } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import {
@@ -54,11 +54,12 @@ export default function CompanyProfilePage({
 		}
 	}
 
-	const handleRefetch = async () => {
-		await refetchNewestCompanyProfile(code);
-
-		// refresh page data
-		router.refresh();
+	const [isRefreshing, transition] = useTransition();
+	const handleRefetch = () => {
+		transition(async () => {
+			await refetchNewestCompanyProfile(code);
+			router.refresh();
+		});
 	};
 
 	return (
@@ -88,9 +89,13 @@ export default function CompanyProfilePage({
 						for IDX listed companies
 					</p>
 				</div>
-				<Button onClick={handleRefetch}>
-					<ListRestart />
-					Refetch Newest Data
+				<Button onClick={handleRefetch} disabled={isRefreshing}>
+					<RefreshCcw
+						className={isRefreshing ? 'animate-spin' : ''}
+					/>
+					{isRefreshing
+						? 'Refreshing...'
+						: 'Refetch Newest Data'}
 				</Button>
 			</div>
 
