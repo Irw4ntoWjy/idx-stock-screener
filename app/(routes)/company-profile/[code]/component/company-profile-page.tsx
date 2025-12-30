@@ -1,6 +1,6 @@
 'use client';
 
-import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import {
 	Tabs,
 	TabsContent,
@@ -9,13 +9,14 @@ import {
 } from '@/components/ui/tabs';
 import { timeout } from '@/lib/utils';
 import * as ScrollArea from '@radix-ui/react-scroll-area';
-import { ArrowLeft, Search } from 'lucide-react';
+import { ArrowLeft, ListRestart } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import {
 	CompanyProfileSchema,
 	FinancialStatementsSchema,
 } from '../company-profile-schema';
+import { refetchNewestCompanyProfile } from '../server/fetch-company-profile';
 import { fetchFinancialStatements } from '../server/fetch-financial-statements';
 import { CompanyProfileTabs } from './company-profile-tabs';
 import { FinancialStatementTabs } from './financial-statement-tabs';
@@ -32,8 +33,6 @@ export default function CompanyProfilePage({
 	const searchParams = useSearchParams();
 	const openFrom = searchParams.get('from') || undefined;
 	const router = useRouter();
-
-	const [searchQuery, setSearchQuery] = useState('');
 
 	const [financialData, setFinancialData] = useState<
 		FinancialStatementsSchema[]
@@ -54,6 +53,13 @@ export default function CompanyProfilePage({
 			setFinancialData([]);
 		}
 	}
+
+	const handleRefetch = async () => {
+		await refetchNewestCompanyProfile(code);
+
+		// refresh page data
+		router.refresh();
+	};
 
 	return (
 		<div className="bg-card w-full h-full border border-t-0 rounded-b-lg px-4 py-4">
@@ -82,6 +88,10 @@ export default function CompanyProfilePage({
 						for IDX listed companies
 					</p>
 				</div>
+				<Button onClick={handleRefetch}>
+					<ListRestart />
+					Refetch Newest Data
+				</Button>
 			</div>
 
 			<ScrollArea.Root
