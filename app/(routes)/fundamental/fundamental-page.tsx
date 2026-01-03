@@ -114,7 +114,7 @@ export default function FundamentalPage({
 						cellStyle: { numFmt: '[$-id-ID]#,##0.00' },
 					},
 					{
-						header: 'PBV',
+						header: 'PBRV',
 						width: 12,
 						value: (r) => r.pbv ?? 0,
 						cellStyle: { numFmt: '[$-id-ID]#,##0.00' },

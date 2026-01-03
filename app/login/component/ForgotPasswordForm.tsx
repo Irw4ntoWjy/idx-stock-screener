@@ -1,13 +1,14 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
 	InputOTP,
 	InputOTPGroup,
 	InputOTPSlot,
 } from '@/components/ui/input-otp';
 import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
+import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 import {
@@ -15,7 +16,6 @@ import {
 	resetPassword,
 	verifyForgotPasswordOTP,
 } from '../server/forgot-password';
-import { Eye, EyeOff } from 'lucide-react';
 
 type ForgotPasswordFormProps = {
 	email: string;
@@ -180,9 +180,9 @@ export const ForgotPasswordForm = ({
 									}
 								>
 									{showNewPassword ? (
-										<EyeOff className="size-4" />
-									) : (
 										<Eye className="size-4" />
+									) : (
+										<EyeOff className="size-4" />
 									)}
 								</button>
 							</div>

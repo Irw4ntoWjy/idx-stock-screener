@@ -100,7 +100,7 @@ export const getFundamentalColumns =
 		},
 		{
 			accessorKey: 'pbv',
-			header: 'PBV',
+			header: 'PBRV',
 			cell: ({ row }) => (
 				<div className="text-card-foreground font-semibold">
 					{row.original.pbv ? formatNumber(row.original.pbv) : 0}
