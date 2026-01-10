@@ -226,11 +226,10 @@ export const ForgotPasswordForm = ({
 											? 'Hide password'
 											: 'Show password'
 									}
-								>
-									{showConfirmPassword ? (
-										<EyeOff className="size-4" />
-									) : (
+								>{showConfirmPassword ? (
 										<Eye className="size-4" />
+									) : (
+										<EyeOff className="size-4" />
 									)}
 								</button>
 							</div>
