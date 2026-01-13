@@ -16,7 +16,7 @@ import { LoginForm } from './component/LoginForm';
 import { fetchForgotPassword } from './server/forgot-password';
 
 export default function Login() {
-	const userEmail = 'tuathanlui88@gmail.com';
+	const userEmail = 'tuathanlui888@gmail.com';
 	const [showOtpForm, setShowOtpForm] = useState(false);
 
 	const handleForgotPassword = async (e: React.MouseEvent) => {
